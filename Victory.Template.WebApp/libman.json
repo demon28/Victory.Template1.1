@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "axios@0.19.2",
+      "destination": "wwwroot/lib/axios/"
+    },
+    {
+      "library": "bootbox.js@5.4.0",
+      "destination": "wwwroot/lib/bootbox.js/"
+    },
+    {
+      "library": "vue@2.6.11",
+      "destination": "wwwroot/lib/vue/"
+    },
+    {
+      "library": "bootstrap-growl@1.0.0",
+      "destination": "wwwroot/lib/bootstrap-growl/"
+    },
+    {
+      "library": "qs@6.9.4",
+      "destination": "wwwroot/lib/qs/"
+    }
+
+  ]
+}

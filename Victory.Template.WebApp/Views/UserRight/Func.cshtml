@@ -1,0 +1,450 @@
+﻿
+
+@section Pageheader{
+    <h1>
+        <small> 权限配置 </small>
+
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Power</li>
+    </ol>
+
+}
+
+<section class="content" id="tab">
+    <div class="row">
+
+        <!-- /.col -->
+        <div>
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">List</h3>
+
+                    <div class="box-tools">
+
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-default pull-right" @@click="ShowAdd()" id="btn_Search">添加权限</button>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <th>功能名称</th>
+
+                                <th>路由地址</th>
+                                <th>归属ID</th>
+                                <th>功能类型</th>
+
+                                <th>域</th>
+                                <th>控制器</th>
+                                <th>Action</th>
+                                <th>排序ID</th>
+
+                                <th>备注</th>
+                                <th style="text-align:right">
+                                    操作
+                                </th>
+                            </tr>
+
+                            <template v-for="(item,index) in list" >
+                                <tr>
+                                    <th>{{item.Id}}</th>
+                                    <td>
+
+                                        <i v-if="!item.ChildsShow" @@click="ChildsShow(item,true)" class="fa fa-plus-square-o"></i>
+                                        <i v-if="item.ChildsShow" @@click="ChildsShow(item,false)" class="fa  fa-minus-square-o"></i>
+
+
+                                        {{item.Powername}}
+                                    </td>
+                                    <td>
+                                        {{item.Pageurl}}
+                                    </td>
+                                    <td>{{item.Parentid}}</td>
+                                    <td>{{SetType(item.Powertype)}}</td>
+
+                                    <td>{{item.Area}}</td>
+                                    <td>{{item.Controller}}</td>
+                                    <td>{{item.Action}}</td>
+                                    <td>{{item.Sortid}}</td>
+
+
+                                    <td>{{item.Remarks}}</td>
+
+
+                                    <td style="text-align:right">
+
+                                        <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(item)">修改</button>
+                                        &nbsp;      &nbsp;
+                                        <button type="button" class="btn bg-red btn-xs" v-on:click="Del(item)">删除</button>
+                                    </td>
+                                </tr>
+
+
+
+                                <tr  v-for="(child,index) in item.Childs" v-if="item.ChildsShow">
+                                    <th>{{child.Id}}</th>
+                                    <td>
+
+
+                                        <span v-if="child.Powertype==2" style="margin-left:30px">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
+
+                                        {{child.Powername}}
+                                    </td>
+                                    <td>
+                                        {{child.Pageurl}}
+                                    </td>
+                                    <td>{{child.Parentid}}</td>
+                                    <td>{{SetType(child.Powertype)}}</td>
+
+                                    <td>{{child.Area}}</td>
+                                    <td>{{child.Controller}}</td>
+                                    <td>{{child.Action}}</td>
+                                    <td>{{child.Sortid}}</td>
+
+
+                                    <td>{{child.Remarks}}</td>
+
+
+                                    <td style="text-align:right">
+
+                                        <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(child)">修改</button>
+                                        &nbsp;      &nbsp;
+                                        <button type="button" class="btn bg-red btn-xs" v-on:click="Del(child)">删除</button>
+                                    </td>
+                                </tr>
+
+
+                            </template>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+
+
+                <div class="box-footer no-padding">
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                    </div>
+
+                    <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
+
+                        <ul class="pagination pagination-sm no-margin pull-right" id="ul_page">
+                        </ul>
+                    </div>
+
+
+                    <!-- /.pull-right -->
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- /.col -->
+    <!-- /.row -->
+
+
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="txt_username">权限信息</h4>
+                </div>
+                <div class="modal-body">
+
+
+                    <form class="form-horizontal">
+
+                        <div class="form-group">
+                            <label for="txt_projectname" class="col-sm-3 control-label">权限名称：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="poweritem.Powername">
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="form-group ">
+                            <label for="txt_address" class="col-sm-3 control-label">权限类型：</label>
+
+                            <div class="col-sm-7">
+
+                                <select class="form-control" v-model="poweritem.Powertype">
+
+                                    <option value="1">页面访问</option>
+                                    <option value="2">功能操作</option>
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label for="txt_kehuname" class="col-sm-3 control-label">路由：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="poweritem.Pageurl">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txt_kehuname" class="col-sm-3 control-label">归属ID：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="poweritem.Parentid">
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="form-group">
+                            <label for="txt_kehuname" class="col-sm-3 control-label">域：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="poweritem.Area">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="txt_kehuname" class="col-sm-3 control-label">控制器：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="poweritem.Controller">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="txt_kehuname" class="col-sm-3 control-label">Action：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="poweritem.Action">
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="form-group">
+                            <label for="txt_kehuname" class="col-sm-3 control-label">排序id：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="poweritem.Sortid">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="txt_kehuname" class="col-sm-3 control-label">备注：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="poweritem.Remarks">
+                            </div>
+                        </div>
+
+
+
+                    </form>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-right" v-on:click="Add()" v-if="operation=='add'">添 加</button>
+                    <button type="button" class="btn btn-primary pull-right" v-on:click="Update()" v-if="operation=='update'">修 改</button>
+
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关 闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
+
+
+</section>
+
+
+
+@section scripts{
+
+    <script>
+
+
+       var vm = new Vue({
+           el: "#tab",
+           data: {
+                   list: [],
+               operation: "add",
+               poweritem: {}
+           },
+           created: function () {
+
+               this.Init();
+
+           },
+           mounted: function () {
+
+
+           },
+           methods: {
+
+               Init() {
+                   var self = this;
+
+                   AjaxPost({
+                       url: "/UserRight/ListFunc",
+                       type: "POST",
+                       data: {
+
+                       },
+                       success: function (result) {
+
+                        console.log(JSON.stringify(result));
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+
+
+                           for (var i = 0; i < result.Content.length; i++) {
+
+                               let item = result.Content[i];
+                               item.ChildsShow = false;
+
+                               self.list.push(item);
+                           }
+
+                       }
+                   })
+               },
+
+               Del: function (item) {
+                   var self = this;
+                   bootbox.confirm("您确定删除改记录吗？", function (res) {
+                       if (res) {
+
+                           AjaxPost({
+                               url: "/UserRight/DelFunc",
+                               type: "POST",
+                               data: {
+                                   id: item.Id
+                               },
+                               success: function (result) {
+
+                                   if (!result.Success) {
+
+                                       alert_danger(result.Message);
+                                       return;
+                                   }
+                                   alert_success("删除成功");
+                                   self.Init();
+
+                               }
+                           })
+                       }
+                   });
+
+
+
+               },
+               Add: function () {
+                   var _self = this;
+
+
+                   AjaxPost({
+                       url: "/UserRight/AddFunc",
+                       type: "POST",
+                       data: _self.poweritem,
+                       success: function (result) {
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+                           $('#modal-default').modal('hide');
+                           alert_success(result.Message);
+                           _self.Init();
+
+
+                       }
+                   })
+               },
+               Update: function () {
+                   var _self = this;
+                   AjaxPost({
+                       url: "/UserRight/UpdateFunc",
+                       type: "POST",
+                       data: _self.poweritem,
+                       success: function (result) {
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+                           $('#modal-default').modal('hide');
+                           alert_success(result.Message);
+                           _self.Init();
+
+                       }
+                   })
+
+               },
+               ShowUpdate: function (item) {
+                   this.operation = "update";
+                   $('#modal-default').modal('show');
+                   this.poweritem = item;
+
+               },
+               ShowAdd() {
+
+                   console.log("执行添加");
+                   this.operation = "add";
+                   $('#modal-default').modal('show');
+                   this.poweritem = {};
+                   this.poweritem.POWERTYPE = 1;//设置下拉框默认值
+               },
+               SetType(value) {
+
+                   return EnumGetSingle(value, Power_Typelist());
+               },
+               ChildsShow(item,isShow) {
+
+                   item.ChildsShow = isShow;
+
+               }
+              
+           },
+
+
+
+       });
+
+
+    </script>
+
+}
+
+
+
+

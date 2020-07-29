@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+
+
+
+@section Pageheader{
+
+    <h1>
+        500 Error Page
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">系统异常</a></li>
+        <li class="active">500 error</li>
+    </ol>
+
+}
+
+
+
+
+<div class="error-page">
+  
+    <div class="error-content">
+       
+        <h3> <i class="fa fa-warning text-red"></i> 系统出现异常，请与管理员联系.</h3>
+
+        <p id="p1">
+
+        </p>
+
+    </div>
+</div>
+
+
+
+
+@section scripts{
+
+
+<script>
+
+    document.getElementById("p1").innerHTML = decodeURI( document.location);
+
+</script>
+
+
+}
+
+

@@ -1,0 +1,540 @@
+﻿
+@{
+    ViewData["Title"] = "售后管理系统";
+}
+
+
+@section Pageheader{
+
+    <h1>
+        <small> 角色管理 </small>
+
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Role</li>
+    </ol>
+
+}
+
+<section class="content" id="tab">
+    <div class="row">
+
+        <!-- /.col -->
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">角色列表</h3>
+
+                    <div class="box-tools">
+
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-default pull-right" @@click="ShowAdd()" id="btn_Search">添加角色</button>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <th>角色名称</th>
+
+
+                                <th style="text-align:right">
+                                    操作
+                                </th>
+                            </tr>
+
+                            <tr v-for="(item,index) in list">
+                                <td>{{item.Id}}</td>
+                                <td>{{item.Rolename}}</td>
+
+                                <td style="text-align:right">
+                                    <button type="button" class="btn bg-blue  btn-xs" v-on:click="ShowPower(item)">权限配置</button>
+                                    &nbsp;      &nbsp;
+                                    <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(item)">修改</button>
+                                    &nbsp;      &nbsp;
+                                    <button type="button" class="btn bg-red btn-xs" v-on:click="Del(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+
+
+                <div class="box-footer no-padding">
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                    </div>
+
+                    <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
+
+                        <ul class="pagination pagination-sm no-margin pull-right" id="ul_page">
+                        </ul>
+                    </div>
+
+
+                    <!-- /.pull-right -->
+                </div>
+            </div>
+        </div>
+
+
+  
+
+        <!-- /.col -->
+        <div class="col-md-8">
+            <div class="box box-success">
+                <div class="box-header">
+                    <h3 class="box-title">{{rolename}}</h3>
+
+                    <div class="box-tools">
+
+
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+
+
+                            <table class="table">
+                        <tbody>
+                            <tr>
+
+                                <th>访问权限</th>
+
+                                <th>操作权限</th> 
+
+                            </tr>
+
+                            <template v-for="(item,index) in powerlist" >
+                                <tr>
+                                 
+                                    <td>
+                                        <input type="checkbox" @@click="ChangePower(item)" v-model="item.checked" />
+                                        {{item.Powername}}
+                                    </td>
+
+                                    <td style=" vertical-align: middle;text-align:left">
+
+                                        <div v-for="(child,index) in  item.Childs" >
+
+                                            <label style="margin-left:20px;float:left">
+
+                                                <input type="checkbox" @@click="ChangePower(child)" v-model="child.checked"  />
+                                                {{ child.Powername }}
+                                            </label>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+
+
+                 
+
+                            </template>
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <!-- /.box-body -->
+
+
+                <div class="box-footer no-padding">
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                    </div>
+
+                    <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
+
+                        <ul class="pagination pagination-sm no-margin pull-right" id="ul_page">
+                        </ul>
+                    </div>
+
+
+                    <!-- /.pull-right -->
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="txt_username">角色信息</h4>
+                </div>
+                <div class="modal-body">
+
+
+                    <form class="form-horizontal">
+
+                        <div class="form-group">
+                            <label for="txt_projectname" class="col-sm-3 control-label">角色名称：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="roleitem.Rolename">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="txt_kehuname" class="col-sm-3 control-label">备注：</label>
+
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="roleitem.Remarks">
+                            </div>
+                        </div>
+
+
+
+                    </form>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-right" v-on:click="Add()" v-if="operation=='add'">添 加</button>
+                    <button type="button" class="btn btn-primary pull-right" v-on:click="Update()" v-if="operation=='update'">修 改</button>
+
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关 闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
+  
+
+
+
+</section>
+
+
+
+@section scripts{
+
+    <script>
+
+
+       var vm = new Vue({
+           el: "#tab",
+           data: {
+                   list: [],
+               operation:"add",
+               roleitem: {},
+               powerlist: {},
+               roleid: 0,
+               rolename:""
+
+           },
+           created: function () {
+
+               this.Init();
+
+
+           },
+           methods: {
+
+               Init() {
+
+                   var self = this;
+
+
+                   AjaxPost({
+                       url: "/UserRole/ListRole",
+                       type: "POST",
+                       data: {
+
+                       },
+                       success: function (result) {
+
+                          console.log(JSON.stringify(result));
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+
+                           self.list = result.Content;
+
+                           self.ShowPower(self.list[0])
+
+                       }
+                   })
+               },
+
+               Del: function (item) {
+                   var self = this;
+                   bootbox.confirm("您确定删除改记录吗？", function (res) {
+                       if (res) {
+
+                           AjaxPost({
+                               url: "/UserRole/DelRole",
+                               type: "POST",
+                               data: {
+                                   id: item.Id
+                               },
+                               success: function (result) {
+
+                                   if (!result.Success) {
+
+                                       alert_danger(result.Message);
+                                       return;
+                                   }
+                                   alert_success("删除成功");
+                                   self.Init();
+
+                               }
+                           })
+                       }
+                   });
+
+
+
+               },
+               Add: function () {
+                   var _self = this;
+
+
+                   AjaxPost({
+                       url: "/UserRole/AddRole",
+                       type: "POST",
+                       data: _self.roleitem,
+                       success: function (result) {
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+                           $('#modal-default').modal('hide');
+                           alert_success(result.Message);
+                           _self.Init();
+
+
+                       }
+                   })
+               },
+               Update: function () {
+                   var _self = this;
+                   AjaxPost({
+                       url: "/UserRole/UpdateRole",
+                       type: "POST",
+                       data: _self.roleitem,
+                       success: function (result) {
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+                           $('#modal-default').modal('hide');
+                           alert_success(result.Message);
+                           _self.Init();
+
+                       }
+                   })
+
+               },
+               ShowUpdate: function (item) {
+                   this.operation = "update";
+                   $('#modal-default').modal('show');
+                   this.roleitem = item;
+
+               },
+               ShowAdd() {
+                   this.operation = "add";
+                   $('#modal-default').modal('show');
+                   this.roleitem = {};
+               },
+               ShowPower(item) {
+                   //先按顺序查出所有的权限
+                   var _self = this;
+                   _self.roleid = item.Id;
+                   _self.rolename=item.Rolename
+                   _self.powerlist = {};
+                   _self.BindPowerList();
+
+               },
+               BatchPower(item) {
+                   //批量修改
+
+
+               },
+               ChangePower(item) {
+                   //单项添加 或 删除权限
+
+                   console.log("单项添加 或 删除权限")
+                   console.log(item);
+
+
+                   var _self = this;
+
+                   if (!item.checked) {
+
+                       AjaxPost({
+                           url: "/UserRole/AddRolePowerMebmer",
+                           type: "POST",
+                           data: {
+                               powerid: item.Id,
+                               roleid: _self.roleid,
+                           },
+                           success: function (res) {
+                               console.log(res);
+                               if (!res.Success) {
+                                   alert_danger(res.Message);
+                                   return;
+                               }
+                              _self.BindPowerList();
+                               alert_success(res.Message);
+                               return;
+                           }
+                       })
+
+                   } else {
+
+                       AjaxPost({
+                           url: "/UserRole/DeletedRolePowerMebmer",
+                           type: "POST",
+                           data: {
+                               id: item.RPID
+                           },
+                           success: function (res) {
+
+                               if (!res.Success) {
+                                   alert_danger(res.Message);
+                                   return;
+                               }
+                               _self.BindPowerList();
+                               alert_success(res.Message);
+                               return;
+                           }
+                       })
+
+                   }
+
+
+
+
+
+               },
+               BindPowerList() {
+                   var _self = this;
+                   AjaxPost({
+                       url: "/UserRight/ListFunc",
+                       type: "POST",
+                       success: function (result) {
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+
+                           var Powerlist = result.Content;
+
+                           console.log("powerList:")
+                           console.log(Powerlist);
+
+
+
+                           AjaxPost({
+                               url: "/UserRole/GetRolePowerMebmer",
+                               type: "POST",
+                               data: {
+                                   roleid: _self.roleid
+                               },
+                               success: function (res) {
+                                   console.log("权限角色管理中间表：")
+                                   console.log(res);
+
+                                   if (!res.Success) {
+
+                                       alert_danger(res.Message);
+                                       return;
+                                   }
+
+
+                                   var RolePowerlist = res.Content;
+
+                                   console.log("RoleList:")
+                                   console.log(RolePowerlist);
+
+                                   for (var i = 0; i < Powerlist.length; i++) {
+
+                                       for (var j = 0; j < RolePowerlist.length; j++) {
+
+
+                                           console.log("分别打出来：Powerlist[i].Id===" + Powerlist[i].Id + "    RolePowerlist[j].Powerid===" + RolePowerlist[j].Powerid)
+
+                                           if (Powerlist[i].Id == RolePowerlist[j].Powerid) {
+
+                                               Powerlist[i].checked = true;
+                                               Powerlist[i].RPID = RolePowerlist[j].Id;  //自定义一个属性并赋值
+
+                                           }
+
+
+
+                                           for (var k = 0; k < Powerlist[i].Childs.length; k++) {
+
+                                               if (Powerlist[i].Childs[k].Id == RolePowerlist[j].Powerid) {
+
+                                                   Powerlist[i].Childs[k].checked = true;
+                                                   Powerlist[i].Childs[k].RPID = RolePowerlist[j].Id;  //自定义一个属性并赋值
+
+                                               }
+
+                                           }
+
+
+                                       }
+
+                                   }
+
+
+                                   _self.powerlist = Powerlist;
+                                   console.log(_self.powerlist);
+
+
+                               }
+                           })
+
+
+                       }
+                   })
+               }
+           },
+
+
+
+       });
+
+
+    </script>
+
+}
+
+
+
+

@@ -1,0 +1,404 @@
+﻿@{
+    ViewData["Title"] = "EAM-资产管理系统";
+}
+
+
+
+
+@section Htmlhead{
+
+
+
+}
+
+
+@section Pageheader{
+
+
+
+    <h1>
+        <small>  人员信息</small>
+
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">People</li>
+    </ol>
+
+
+}
+
+
+<section class="content" id="tab">
+    <div class="row">
+
+        <!-- /.col -->
+        <div>
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">List</h3>
+
+                    <div class="box-tools">
+
+
+
+                        <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
+                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Search" id="txt_Search" v-model="keywork" />
+
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default " @@click="Search()" id="btn_Search"><i class="fa fa-search"></i></button>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                                <th>工号</th>
+                                <th>姓名</th>
+
+                                <th>职务</th>
+
+
+                                <th>二级部门</th>
+                                <th>三级部门</th>
+                                <th>四级部门</th>
+                                <th>五级部门</th>
+
+                                <th>电话</th>
+                                <th>性别</th>
+                                <th>状态</th>
+                                <th>入职时间</th>
+
+                                <th>操作</th>
+                            </tr>
+                            <tr v-for="(item,index) in list">
+                                <td>{{item.Workid}}</td>
+                                <td>{{item.Name}}</td>
+                                <td>{{item.Dtname}}</td>
+
+                                <td>{{item.Dep2}}</td>
+                                <td>{{item.Dep3}}</td>
+                                <td>{{item.Dep4}}</td>
+                                <td>{{item.Dep5}}</td>
+
+                                <td>{{item.Phone}}</td>
+
+                                <td>
+                                    <span class="label bg-blue" v-if="item.Sex ==0">男</span>
+                                    <span class="label bg-red " v-if="item.Sex ==1">女</span>
+
+                                </td>
+
+                                <td>
+                                    <span class="label label-success" v-if="item.Status==0">在职</span>
+                                    <span class="label label-warning" v-if="item.Status==1">离职</span>
+                                    <span class="label label-danger" v-if="item.Status==2">锁定</span>
+                                </td>
+
+                                <td>{{item.Comedate}}</td>
+
+                                <td>
+                                    <button type="button" class="btn bg-purple  btn-xs" v-on:click="Role(item)">分配权限</button>
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+
+
+                <div class="box-footer no-padding">
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                    </div>
+
+                    <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
+
+                        <zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
+                                  v-bind:max-page="pageModel.ToTalPage" v-on:pagehandler="Init">
+                        </zpagenav>
+
+                    </div>
+
+
+                    <!-- /.pull-right -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.col -->
+    <!-- /.row -->
+    <!-- /.modal-dialog -->
+
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="txt_username"></h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <th>角色列表</th>
+
+
+                                </tr>
+                                <tr v-for="(item,index) in rolelist">
+                                    <td style=" vertical-align:middle">
+                                        <label>
+
+                                            <input type="checkbox" @@click="ChangeRole(item)" v-model="item.checked" style="height:20px;width:20px;" />
+                                            {{ item.Rolename }}
+                                        </label>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+    <!-- /.modal-dialog -->
+
+</section>
+
+
+@section scripts{
+ 
+
+    <script >
+       
+        var self;
+            var vm2 = new Vue({
+                el: "#tab",
+                data: {
+                    list: [],
+                    pageModel: {
+                        pageIndex: 1,
+                        pageSize: 10,
+                        TotalCount: 0,
+                        ToTalPage: 0,
+                    },
+
+                    rolelist: [],
+                    userrolelist: [],
+                  
+                    userid: 0,
+                    keywork:""
+                },
+                created: function () {
+                    self = this;
+
+                    this.Init(1);
+                },
+                mounted() {
+                    this.EnterKeyup();
+                },
+                methods: {
+                    
+                    Init: function (index) {
+
+                        console.log(self);
+
+                        AjaxPost({
+                            url: "/People/List",
+                            data: {
+                                pageIndex: index,
+                                pageSize: self.pageModel.pageSize,
+                                keyword: self.keywork,
+                            },
+                            success: function (result) {
+
+                                console.log(result);
+
+                                if (!result.Success) {
+                                    alert_info(result.Message);
+                                }
+
+                                self.list = result.Content;
+
+                                self.pageModel.pageIndex = result.PageIndex;
+                                self.pageModel.pageSize = result.PageSize;
+                                self.pageModel.TotalCount = result.TotalCount;
+                                self.pageModel.ToTalPage = result.ToTalPage;
+                            }
+                        })
+                    },
+                    Search: function () {
+                        this.Init(1);
+                    },
+                    EnterKeyup() {
+                        var _self = this;
+                        document.onkeypress = function (e) {
+                            var keycode = document.all ? event.keyCode : e.which;
+
+                            if (keycode == 13) {
+                                self.Init(1);
+                                return false;
+                            }
+                        };
+                    },
+
+
+
+                    ChangeRole(item) {
+
+                        var _self = this;
+                        if (!item.checked) {
+
+                            AjaxPost({
+                                url: "/People/AddUserRoleMebmer",
+                                type: "POST",
+                                data: {
+                                    userid: _self.userid,
+                                    roleid: item.Id
+                                },
+                                success: function (res) {
+                                    console.log(res);
+                                    if (!res.Success) {
+                                        alert_danger(res.Message);
+                                        return;
+                                    }
+                                    _self.BindRoleList();
+                                    alert_success(res.Message);
+                                    return;
+                                }
+                            })
+
+                        } else {
+
+                            AjaxPost({
+                                url: "/People/DeleteUserRoleMebmer",
+                                type: "POST",
+                                data: {
+                                    id: item.URID
+                                },
+                                success: function (res) {
+
+                                    if (!res.Success) {
+                                        alert_danger(res.Message);
+                                        return;
+                                    }
+                                    _self.BindRoleList();
+                                    alert_success(res.Message);
+                                    return;
+                                }
+                            })
+
+                        }
+                    },
+                    Role: function (item) {
+
+                        var _self = this;
+                        _self.userid = item.Id;
+
+                        _self.BindRoleList();
+
+                        $('#modal-default').modal('show');
+
+                    },
+                    BindRoleList() {
+                        var _self = this;
+
+                        AjaxPost({
+                            url: "/People/GetAllRole",
+                            type: "POST",
+                            data: {
+
+                            },
+                            success: function (result) {
+
+                                if (!result.Success) {
+                                    return;
+                                }
+
+                                var rolearray = result.Content;
+
+                                AjaxPost({
+                                    url: "/People/GetUserRoleMebmer",
+                                    type: "POST",
+                                    data: {
+                                        userid: _self.userid
+                                    },
+                                    success: function (res) {
+
+                                        if (!res.Success) {
+                                            return;
+                                        }
+
+                                        _self.userrolelist = res.Content;
+
+
+                                        console.log(JSON.stringify(_self.userrolelist) + "用户与角色关联");
+
+
+
+                                        //第一层循环，系统有多少角色
+                                        for (var i = 0; i < rolearray.length; i++) {
+
+                                            //第二层循环，用户与角色关联表， 查询出用户
+                                            for (var j = 0; j < _self.userrolelist.length; j++) {
+
+                                                if (rolearray[i].Id == _self.userrolelist[j].Roleid) {
+
+                                                    rolearray[i].checked = true;
+                                                    rolearray[i].URID = _self.userrolelist[j].Id;
+
+                                                    console.log(rolearray[j].Id + "======" + rolearray[j].checked);
+                                                }
+
+                                            }
+
+                                        }
+
+                                        _self.rolelist = rolearray;
+
+                                        console.log(JSON.stringify(_self.rolelist) + "角色查看");
+
+
+                                    }
+                                })
+
+
+
+                            }
+                        })
+
+                    }
+                }
+            });
+      
+
+
+
+
+    </script>
+
+
+
+}
