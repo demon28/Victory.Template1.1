@@ -12,10 +12,16 @@ namespace Victory.Template.Entity.Model
             /// </summary>
             public string DB { get; set; }
 
-            /// <summary>
-            /// 投产环境
-            /// </summary>
-            public string ProductDatabase { get; set; }
+
+        /// <summary>
+        /// 使用数据库
+        /// </summary>
+        public bool IsEncrypt { get; set; }
+
+        /// <summary>
+        /// 投产环境
+        /// </summary>
+        public string ProductDatabase { get; set; }
 
             /// <summary>
             /// 预投产环境

@@ -19,22 +19,30 @@ namespace Victory.Template.Entity
 
             var dbmodel = configHelper.Get<Model.DbModel>("ConnectionStrings");
 
+
+            string connString= dbmodel.DevelopDatabase;
             if (dbmodel.DB== "ProductDatabase")
             {
-                return dbmodel.ProductDatabase;
+                connString= dbmodel.ProductDatabase;
             }
 
             if (dbmodel.DB == "EnvironDatabase")
             {
-                return dbmodel.EnvironDatabase;
+                connString= dbmodel.EnvironDatabase;
             }
 
             if (dbmodel.DB == "DevelopDatabase")
             {
-                return dbmodel.DevelopDatabase;
+                connString= dbmodel.DevelopDatabase;
             }
 
-            return dbmodel.DevelopDatabase;
+
+            if (dbmodel.IsEncrypt)
+            {
+                connString= Victory.Core.Encrypt.Aes.AesDecrypt(connString, Core.Helpers.MachineHelper.GetCpuId());
+            }
+
+            return connString;
         }
 
 
@@ -123,5 +131,27 @@ namespace Victory.Template.Entity
             }
 
         }
+        /// <summary>
+        /// 是否开启全局异常捕捉过滤器
+        /// </summary>
+        public static bool IsExceptionFilter
+        {
+            get
+            {
+                Victory.Core.Helpers.ConfigHelper configHelper = new Victory.Core.Helpers.ConfigHelper("appsettings.json");
+
+                var key = configHelper.GetSingle("IsExceptionFilter");
+
+                if (string.IsNullOrEmpty(key))
+                {
+                    return false;
+                }
+
+                return key.ToBool();
+            }
+
+        }
+        
+
     }
 }

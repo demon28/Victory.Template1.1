@@ -12,6 +12,7 @@ using log4net;
 using System.IO;
 using log4net.Config;
 using Victory.Template.WebApp.Attribute;
+using Victory.Template.Entity;
 
 namespace Victory.Template.WebApp
 {
@@ -56,7 +57,10 @@ namespace Victory.Template.WebApp
 
             //全局捕捉异常，并写log日志
             services.AddControllers(option => {
-                option.Filters.Add<ExceptionFilter>();
+                if (AppConfig.IsExceptionFilter)
+                {
+                    option.Filters.Add<ExceptionFilter>();
+                }
 
             })
               .AddNewtonsoftJson(options =>

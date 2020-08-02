@@ -41,7 +41,7 @@ namespace Victory.Template.DataAccess.CodeGenerator
             page.TotalCount = data.Count().ToInt();
 
             var list = data.Page(page.PageIndex, page.PageSize)
-                .OrderBy(s => s.Createtime)
+                .OrderByDescending(s => s.Createtime)
                 .ToList();
 
             return list;
