@@ -41,15 +41,33 @@
                     <div class="box-tools">
 
 
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-sm pull-right" @@click="DownTemp()" id="btn_Add">下载模板</button>
+                        </div>
+
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-sm pull-right" @@click="Export()" id="btn_Search"><i class="fa fa-upload"></i> 导出</button>
+                        </div>
+
+
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                           
+                                <button type="button" class="btn btn-sm " @@click="Import()"><i class="fa fa-download"></i> 导入</button>
+
+                        </div>
 
                         <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
                             <input type="text" name="table_search" class="form-control pull-right" placeholder="Search" id="txt_Search" v-model="keywork" />
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default " @@click="Search()" id="btn_Search"><i class="fa fa-search"></i></button>
+
                             </div>
 
                         </div>
+
+
+
 
 
 
@@ -60,6 +78,7 @@
                     <table class="table table-hover">
                         <tbody>
                             <tr>
+                                <th><input type="checkbox" id="check_all"> 全选</th>
                                 <th>工号</th>
                                 <th>姓名</th>
 
@@ -79,6 +98,7 @@
                                 <th>操作</th>
                             </tr>
                             <tr v-for="(item,index) in list">
+                                <td><input type="checkbox" :id="item.Id" name="check_item"> </td>
                                 <td>{{item.Workid}}</td>
                                 <td>{{item.Name}}</td>
                                 <td>{{item.Dtname}}</td>
@@ -106,7 +126,8 @@
 
                                 <td>
                                     <button type="button" class="btn bg-purple  btn-xs" v-on:click="Role(item)">分配权限</button>
-
+                                    &nbsp;
+                                    <button type="button" class="btn bg-red  btn-xs" v-on:click="Del(item)">删除</button>
                                 </td>
                             </tr>
 
@@ -221,7 +242,7 @@
                 },
                 methods: {
                     
-                    Init: function (index) {
+                    Init(index) {
 
                         console.log(self);
 
@@ -249,7 +270,7 @@
                             }
                         })
                     },
-                    Search: function () {
+                    Search() {
                         this.Init(1);
                     },
                     EnterKeyup() {
@@ -263,9 +284,6 @@
                             }
                         };
                     },
-
-
-
                     ChangeRole(item) {
 
                         var _self = this;
@@ -312,7 +330,7 @@
 
                         }
                     },
-                    Role: function (item) {
+                    Role(item) {
 
                         var _self = this;
                         _self.userid = item.Id;
@@ -388,6 +406,18 @@
 
                             }
                         })
+
+                    },
+                    DownTemp() {
+
+
+
+                    },
+                    Import() {
+
+                    },
+                    Export() {
+
 
                     }
                 }

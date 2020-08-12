@@ -5,10 +5,10 @@ namespace Victory.Template.Facade
     public class LoginFacade: FacadeBase
     {
             
-        public bool Login(string workId,string pwd,ref Team_User user)
+        public bool Login(string workId,string pwd,ref Tsys_User user)
         {
 
-            DataAccess.CodeGenerator.Team_User_Da da = new DataAccess.CodeGenerator.Team_User_Da();
+            DataAccess.CodeGenerator.Tsys_User_Da da = new DataAccess.CodeGenerator.Tsys_User_Da();
 
             if (da.Where(s => s.Workid == workId).ToOne() == null)
             {

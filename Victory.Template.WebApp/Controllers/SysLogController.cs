@@ -26,7 +26,7 @@ namespace Victory.Template.WebApp.Controllers
 
         [Right(PowerName = "查询")]
         [HttpPost]
-        public IActionResult List(string keyword,int keytype, int pageIndex, int pageSize)
+        public IActionResult List(string keyword,DateTime? keystartime, DateTime? keyendTime, int keytype, int pageIndex, int pageSize)
         {
 
             PageModel page = new PageModel();
@@ -35,7 +35,7 @@ namespace Victory.Template.WebApp.Controllers
 
 
             Tsys_Log_Da da = new Tsys_Log_Da();
-            var list = da.ListByWhere(keyword, (SysLogType)keytype, ref page);
+            var list = da.ListByWhere(keyword, (SysLogType)keytype, keystartime, keyendTime, ref page);
 
 
             return SuccessResultList(list, page);

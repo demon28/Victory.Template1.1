@@ -17,6 +17,12 @@
 }
 
 
+@section Htmlhead{
+    <link href="~/lib/datatimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <script src="~/lib/datatimepicker/bootstrap-datetimepicker.js"></script>
+    <script src="~/lib/datatimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+}
+
 
 
 <section class="content" id="tab">
@@ -28,31 +34,50 @@
                 <div class="box-header">
                     <h3 class="box-title">List</h3>
 
-                    <div class="box-tools">
+                    <div class="box-tools" style="width:750px">
 
 
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px; width:50px">
 
-                        <div class="input-group input-group-sm hidden-xs  pull-right" style="width: 200px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Search" id="txt_Search" v-model="keywork" />
-
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default " @@click="Search()" id="btn_Search"><i class="fa fa-search"></i></button>
-                            </div>
-
+                            <button type="button" class="btn btn-sm pull-right " @@click="Search()" id="btn_Search">查询</button>
                         </div>
 
-                        <div class="input-group input-group-sm  pull-right" style="margin-right:10px; width: 200px;">
-                            <select class="form-control" v-model="keytype">
+                        <div class="input-group input-group-sm  pull-right" style="margin-left:10px; width: 120px;">
+                            <select class="form-control" v-model="condition.keytype">
 
                                 <option value="0">全部</option>
                                 <option value="1">登录日志</option>
                                 <option value="2">系统异常</option>
-
+                                <option value="2">操作记录</option>
                             </select>
                         </div>
 
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;width:120px">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" placeholder="结束时间" id="txt_enddate"  autocomplete="off" />
+                        </div>
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;width:120px">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" placeholder="开始时间" id="txt_stardate" autocomplete="off" />
+                        </div>
+
+
+
+
+
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;width:150px">
+                            <div class="input-group-addon">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </div>
+                            <input type="text" name="table_search" class="form-control pull-right" placeholder="关键字搜索" id="txt_Search" v-model="condition.keywork" />
+                        </div>
+
                     </div>
-                    </div>
+                </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
@@ -73,7 +98,7 @@
                                 </td>
 
                                 <td>{{item.Content}}</td>
-                                <td>{{item.Createtime}}</td>
+                                <td style="width:150px">{{item.Createtime}}</td>
 
                             </tr>
 
@@ -113,13 +138,7 @@
 @section scripts{
 
 
-
-
     <script>
-
-
-
-
 
         var self;
         var vm = new Vue({
@@ -132,12 +151,13 @@
                     TotalCount: 0,
                     ToTalPage: 0,
                 },
+                condition: {
+                    keytype: 0,
+                    keywork: "",
+                    keystartime: "",
+                    keyendTime: ""
+                }
 
-                 keytype: 0,
-                 keywork: ""
-             
-
-             
             },
             created: function () {
                 self = this;
@@ -146,20 +166,37 @@
             },
             mounted() {
                 this.EnterKeyup();
+
+
+
+                $('#txt_enddate,#txt_stardate').datetimepicker({
+                    language: 'zh-CN', //语言选择中文 注：旧版本 新版方法：
+                    minView: "month",//设置只显示到月份
+                    format: "yyyy-mm-dd",//日期格式
+                    autoclose: true,//选中关闭
+                    todayBtn: true//今日按钮
+                });
+
             },
             methods: {
 
                 Init: function (index) {
 
-                    console.log("日志类型",self.keytype);
+                    //时间控件，不能用v-model 双向绑定
+                    self.condition.keystartime = $("#txt_stardate").val();
+                    self.condition.keyendTime = $("#txt_enddate").val();
+
+                    console.log("日志类型", self.keytype);
 
                     AjaxPost({
                         url: "/SysLog/List",
                         data: {
                             pageIndex: index,
                             pageSize: self.pageModel.pageSize,
-                            keyword: self.keywork,
-                            keytype: self.keytype,
+                            keyword: self.condition.keywork,
+                            keytype: self.condition.keytype,
+                            keystartime: self.condition.keystartime,
+                            keyendTime: self.condition.keyendTime,
                         },
                         success: function (result) {
 
@@ -182,7 +219,7 @@
                     this.Init(1);
                 },
                 EnterKeyup() {
-                 
+
                     document.onkeypress = function (e) {
                         var keycode = document.all ? event.keyCode : e.which;
 

@@ -16,16 +16,16 @@ namespace Victory.Template.DataAccess.CodeGenerator
     /// <summary>
     ///  
     ///</summary>
-    public class Team_User_Da : FreeSql.BaseRepository<Team_User>
+    public class Tsys_User_Da : FreeSql.BaseRepository<Tsys_User>
     {
 
-        public Team_User_Da() : base(DataAccess.DbContext.Db, null, null)
+        public Tsys_User_Da() : base(DataAccess.DbContext.Db, null, null)
         {
 
         }
 
 
-        public List<Team_User> ListByWhere(string keyword, ref PageModel page) {
+        public List<Tsys_User> ListByWhere(string keyword, ref PageModel page) {
 
             var data =this.Select;
 

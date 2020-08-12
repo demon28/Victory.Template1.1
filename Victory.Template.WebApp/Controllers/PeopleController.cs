@@ -28,7 +28,7 @@ namespace Victory.Template.WebApp.Controllers
             page.PageSize = pageSize;
 
 
-            Team_User_Da da = new Team_User_Da();
+            Tsys_User_Da da = new Tsys_User_Da();
             var list = da.ListByWhere(keyword, ref page);
 
 

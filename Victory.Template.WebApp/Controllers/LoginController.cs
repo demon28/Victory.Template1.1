@@ -43,7 +43,7 @@ namespace Victory.Template.WebApp.Controllers
             password = Md5.Encrypt32(password);
 
      
-            Team_User userModel = new Team_User();
+            Tsys_User userModel = new Tsys_User();
 
             if (!loginFacade.Login(workid, password, ref userModel))
             {

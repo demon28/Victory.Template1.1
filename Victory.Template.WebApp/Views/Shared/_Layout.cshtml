@@ -196,20 +196,6 @@ desired effect
 
 
 
-                    <li class=" treeview">
-                        <a href="">
-                            <i class="fa fa-users"></i> <span>人员管理</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="/People/Index"><i class="fa fa-user"></i> 人员信息</a></li>
-
-                        </ul>
-                    </li>
-
-
 
                     <li class=" treeview">
                         <a href="#">
@@ -259,7 +245,7 @@ desired effect
                     </li>
 
 
-                    <li class=" treeview">
+                    <li class="active treeview">
                         <a href="#">
                             <i class="fa   fa-cogs"></i> <span>系统管理</span>
                             <span class="pull-right-container">
@@ -267,7 +253,7 @@ desired effect
                             </span>
                         </a>
                         <ul class="treeview-menu">
-
+                            <li><a href="/People/Index"><i class="fa fa-user"></i> 人员信息</a></li>
                             <li><a href="/UserRole/Role"><i class="fa  fa-user-plus"></i> 角色管理</a></li>
                             <li><a href="/UserRight/Func"><i class="fa fa-random"></i> 功能配置</a></li>
                             <li><a href="/SysLog/Index"><i class="fa fa-hand-rock-o"></i> 系统日志</a></li>
@@ -423,9 +409,12 @@ desired effect
          user experience. -->
 
     <script>
-        bootbox.setDefaults("locale", "zh_CN");
+      
 
         $(document).ready(function () {
+
+            bootbox.setDefaults("locale", "zh_CN");
+
             GetLoginUser();
         });
 

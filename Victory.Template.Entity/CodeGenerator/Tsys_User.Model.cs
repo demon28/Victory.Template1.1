@@ -9,10 +9,10 @@ namespace Victory.Template.Entity.CodeGenerator
     /// <summary>
     ///  
     ///</summary>
-    public class   Team_User
+    public class Tsys_User
     {
 
-       public Team_User()
+       public Tsys_User()
        {
       
        }
