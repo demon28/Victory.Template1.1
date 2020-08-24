@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\Login\css\bootstrap.min.css.map" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="wwwroot\AdminLte\bower_components\bootstrap\css\bootstrap-theme.css" />
     <Content Include="wwwroot\AdminLte\bower_components\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="wwwroot\AdminLte\bower_components\bootstrap\css\bootstrap.css" />
@@ -1424,6 +1428,11 @@
     <None Include="wwwroot\AdminLte\bower_components\Ionicons\src\woman.svg" />
     <None Include="wwwroot\AdminLte\bower_components\Ionicons\src\wrench.svg" />
     <None Include="wwwroot\AdminLte\bower_components\Ionicons\src\xbox.svg" />
+    <None Include="wwwroot\Login\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\Login\js\bootsnav.js" />
+    <None Include="wwwroot\Login\js\bootstrap.min.js" />
+    <None Include="wwwroot\Login\js\jquery-1.11.0.min.js" />
+    <None Include="wwwroot\Login\js\jquery.js" />
   </ItemGroup>
 
   <ItemGroup>
