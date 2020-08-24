@@ -85,7 +85,7 @@ function AjaxGet(json) {
 
 
 
-function Axios(json) {
+function AxiosRequest(json) {
 
     var ajax = axios({
         method: json.method,

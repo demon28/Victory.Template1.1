@@ -30,7 +30,7 @@ namespace Victory.Template.WebApp.Controllers
         /// <param name="password"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> LoginIn(string workid, string password)
+        public async Task<IActionResult> Login(string workid, string password)
         {
             //这里只是简单处理了
             if (string.IsNullOrEmpty(workid) || string.IsNullOrEmpty(password))
