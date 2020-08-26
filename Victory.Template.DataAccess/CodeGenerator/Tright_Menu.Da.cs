@@ -26,6 +26,12 @@ namespace Victory.Template.DataAccess.CodeGenerator
         }
 
 
+        public List<Tright_Menu> ListByLogin(int userid) { 
+            
+
+        
+        }
+
     }
 
 }
