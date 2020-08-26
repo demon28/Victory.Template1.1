@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Victory.Template.Entity.CodeGenerator;
 
 namespace Victory.Template.Entity.Model
 {
@@ -10,22 +11,26 @@ namespace Victory.Template.Entity.Model
         /// <summary>
         /// 用户id
         /// </summary>
-        public int userId { get; set; }
-
+        public int UserId { get; set; }
 
         /// <summary>
-        /// 用户id
+        /// 用户名
         /// </summary>
-        public string userName { get; set; }
+        public string UserName { get; set; }
 
         /// <summary>
         /// 工号
         /// </summary>
-        public string workId { get; set; }
+        public string WorkId { get; set; }
 
         /// <summary>
         /// 性别
         /// </summary>
-         public int sex { get; set; }
+         public int Sex { get; set; }
+
+        /// <summary>
+        /// 菜单
+        /// </summary>
+        public List<Tright_Menu> Menu { get; set; }
     }
 }

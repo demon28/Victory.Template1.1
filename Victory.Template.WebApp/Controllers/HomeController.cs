@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Victory.Template.Entity.Model;
+
+
 
 
 namespace Victory.Template.WebApp.Controllers
@@ -40,12 +43,12 @@ namespace Victory.Template.WebApp.Controllers
         {
             SysUserInfoModel usermodel = new SysUserInfoModel();
 
-            var userinfo = (HttpContext.User.Identity as System.Security.Claims.ClaimsIdentity);
+            var userinfo = (HttpContext.User.Identity as ClaimsIdentity);
 
-            usermodel.userId = int.Parse(userinfo.FindFirst("userId").Value);
-            usermodel.userName = userinfo.FindFirst("userName").Value;
-            usermodel.workId = userinfo.FindFirst("workId").Value;
-            usermodel.sex = int.Parse(userinfo.FindFirst("sex").Value);
+            usermodel.UserId = int.Parse(userinfo.FindFirst("userId").Value);
+            usermodel.UserName = userinfo.FindFirst("userName").Value;
+            usermodel.WorkId = userinfo.FindFirst("workId").Value;
+            usermodel.Sex = int.Parse(userinfo.FindFirst("sex").Value);
 
             return SuccessResult(usermodel);
         }

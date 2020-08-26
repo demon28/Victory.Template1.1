@@ -1,4 +1,5 @@
-﻿using Victory.Template.Entity.CodeGenerator;
+﻿using System.Collections.Generic;
+using Victory.Template.Entity.CodeGenerator;
 
 namespace Victory.Template.Facade
 {
@@ -26,12 +27,24 @@ namespace Victory.Template.Facade
                 return false;
             }
 
+
+            if (user.Isadmin!=Entity.Enums.IsAdmin.系统用户)
+            {
+                this.Message = "抱歉，您不是系统用户！";
+
+                return false;
+            }
+
             return true;
 
         }
 
 
-
+        public List<Tright_Menu> GetUserMenu() { 
+        
+           
+        
+        }
 
     }
 }

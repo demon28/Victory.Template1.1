@@ -86,7 +86,7 @@ desired effect
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>A</b>LT</span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>EAM资产管理系统</b></span>
+                <span class="logo-lg"><b>Victory框架系统</b></span>
             </a>
 
 
@@ -187,14 +187,21 @@ desired effect
                 <!-- Sidebar Menu -->
 
 
-                <ul class="sidebar-menu" data-widget="tree">
+                <ul class="sidebar-menu" data-widget="tree" id="menu_list">
 
 
-
-
-                    <li class="active"><a href="/Home/Index"><i class="fa fa-dashboard"></i> <span>工作台</span></a></li>
-
-
+                    <li class=" treeview">
+                        <a href="#">
+                            <i class="fa fa-dashboard"></i> <span>工作台</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/AssetClassify/Index"><i class="fa  fa-lemon-o"></i> 数据报表</a></li>
+                           
+                        </ul>
+                    </li>
 
 
                     <li class=" treeview">
@@ -247,7 +254,7 @@ desired effect
 
                     <li class="active treeview">
                         <a href="#">
-                            <i class="fa   fa-cogs"></i> <span>系统管理</span>
+                            <i class="fa fa-cogs"></i> <span>系统管理</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
                             </span>
@@ -381,8 +388,6 @@ desired effect
     </div>
     <!-- ./wrapper -->
     <!-- REQUIRED JS SCRIPTS -->
-
-
     <!--axios-->
     <script src="~/lib/axios/axios.js"></script>
 
@@ -400,70 +405,59 @@ desired effect
     <script src="~/Script/Common.js"></script>
     <script src="~/Script/EnumHelper.js"></script>
 
-    <!---Axios请求封装-->
-    <script src="~/Script/AxiosRequsetHelper.js"></script>
-    <script src="~/lib/qs/qs.js"></script>
+    <!--Axios请求封装--Lte框架放弃使用Axios，继续使用jquery，ElementUI 框架使用Axios  -->
+
+    @*<script src="~/Script/AxiosRequsetHelper.js"></script>
+    <script src="~/lib/qs/qs.js"></script>*@
 
 
-    <!-- Optionally, you can add Slimscroll and FastClick plugins.
-         Both of these plugins are recommended to enhance the
-         user experience. -->
+    <!--Ajax请求拦截器-->
+    <script src="~/Script/JqueryRequestHelper.js"></script>
+
+
 
     <script>
-      
+
+         // vue 嵌套挂载，有数据，问题，所以这用JQ 绑定一下数据 Layout 不适合用uve
 
         $(document).ready(function () {
 
             bootbox.setDefaults("locale", "zh_CN");
 
-            GetLoginUser();
-        });
+            MyAjax({
+                type: "POST",
+                url: '/Home/GetLoginUser',
+                success: function (res) {
+                    if (!res.Success) {
+                        alert_info(res.Message);
+                        return;
+                    }
 
-        // vue 嵌套挂载，有数据，问题，所以这用JQ 绑定一下数据 Layout 不适合用uve
+                    var _self = {};
+                    _self.userId = res.Content.userId;
+                    _self.userName = res.Content.userName;
+                    _self.sex = res.Content.sex;
+                    _self.workId = res.Content.workId;
 
+                    $(".username").html(_self.userName + " [" + _self.workId + "]");
 
-        function GetLoginUser() {
+                    let imgurl = "/AdminLte/img/user2-160x160.jpg";
 
-            var _self = {};
+                    if (_self.sex == 1) {
+                        imgurl = "/AdminLte/img/user4-128x128.jpg"
+                    }
 
-            axios({
-                method: 'post',
-                url: '/Home/GetLoginUser'
+                    $("#img_toplogo").attr("src", imgurl)
+                    $("#img_rightlogo").attr("src", imgurl)
+                    $("#image_leftlogo").attr("src", imgurl)
 
-            }).then((response) => {
-
-                let res = response.data;
-
-                if (!res.Success) {
-                    alert_info(res.Message);
-                    return;
                 }
-
-                _self.userId = res.Content.userId;
-                _self.userName = res.Content.userName;
-                _self.sex = res.Content.sex;
-                _self.workId = res.Content.workId;
-
-                $(".username").html(_self.userName + " [" + _self.workId + "]");
-
-                let imgurl = "/AdminLte/img/user2-160x160.jpg";
-
-                if (_self.sex == 1) {
-                    imgurl = "/AdminLte/img/user4-128x128.jpg"
-                }
-
-                $("#img_toplogo").attr("src", imgurl)
-                $("#img_rightlogo").attr("src", imgurl)
-                $("#image_leftlogo").attr("src", imgurl)
-
-
-            }).catch((err) => {
-
-                console.log(err);
 
             });
+        });
 
-        }
+        
+
 
     </script>
 

@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using Victory.Template.Entity.Enums;
 
 namespace Victory.Template.Entity.CodeGenerator
 {
@@ -17,13 +18,14 @@ namespace Victory.Template.Entity.CodeGenerator
       
        }
 
+
         ///<summary>
-        ///描述：主键
+        ///描述：
         ///</summary>
         [Column(IsIdentity = true, IsPrimary = true)]
         public int Id { get; set; }
         ///<summary>
-        ///描述：姓名
+        ///描述：用户名
         ///</summary>
         public string Name { get; set; }
         ///<summary>
@@ -35,35 +37,35 @@ namespace Victory.Template.Entity.CodeGenerator
         ///</summary>
         public string Workid { get; set; }
         ///<summary>
-        ///描述：手机号
+        ///描述：手机
         ///</summary>
         public string Phone { get; set; }
         ///<summary>
-        ///描述：状态默认为0
+        ///描述：状态{0：在职，1：离职}
         ///</summary>
         public int Status { get; set; }
         ///<summary>
-        ///描述：性别0：男 1，女
+        ///描述：性别，{0：男，1：女}
         ///</summary>
         public int Sex { get; set; }
         ///<summary>
-        ///描述：一级部门
+        ///描述：
         ///</summary>
         public string Dep1 { get; set; }
         ///<summary>
-        ///描述：二级部门
+        ///描述：
         ///</summary>
         public string Dep2 { get; set; }
         ///<summary>
-        ///描述：三级部门
+        ///描述：
         ///</summary>
         public string Dep3 { get; set; }
         ///<summary>
-        ///描述：四级部门
+        ///描述：
         ///</summary>
         public string Dep4 { get; set; }
         ///<summary>
-        ///描述：五级部门
+        ///描述：
         ///</summary>
         public string Dep5 { get; set; }
         ///<summary>
@@ -78,11 +80,15 @@ namespace Victory.Template.Entity.CodeGenerator
         ///描述：
         ///</summary>
         public string Remarks { get; set; }
-
         ///<summary>
         ///描述：入职时间
         ///</summary>
         public DateTime Comedate { get; set; }
+        ///<summary>
+        ///描述：是否项目成员
+        ///</summary>
+        public IsAdmin Isadmin { get; set; }
+
 
     }
 }

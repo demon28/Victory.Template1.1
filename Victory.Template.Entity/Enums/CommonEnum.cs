@@ -26,4 +26,10 @@ namespace Victory.Template.Entity.Enums
         页面访问 = 1,
         功能操作 = 2
     }
+
+    public enum IsAdmin
+    {
+        非系统用户=0,
+        系统用户=1
+    }
 }

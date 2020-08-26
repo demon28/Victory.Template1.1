@@ -102,9 +102,13 @@
 
     <script src="~/Script/alertsjavascrtpt.js"></script>
 
+
+
     <script src="~/lib/vue/vue.js"></script>
 
     <script src="~/Script/JqueryRequestHelper.js"></script>
+
+
 
 
     <script>
@@ -116,14 +120,14 @@
                 workid: "",
                 password: "",
                 message: "",
-                messageshow:false
+                messageshow: false
             },
             created() {
                 self = this;
             },
             methods: {
                 Login() {
-                  
+
                     let url = "/Login/Login";
 
                     var params = {
