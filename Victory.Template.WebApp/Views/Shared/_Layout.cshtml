@@ -378,20 +378,32 @@ desired effect
                     //加载菜单
                     LoadMenu(_self.menu);
 
-                    //展开当前菜单  
-                    ExpandMenu();
+                    
                 }
 
             });
         });
 
+        //加载并展开当前菜单
         function LoadMenu(list) {
             //console.log(list);
             let content = "";
+            let location = window.location.pathname;
+            let isActive = "";
+            console.log(location);
+
 
             for (let item of list) {
 
-                content += `<li class=" treeview">
+                isActive = "treeview";
+
+                for (let li of item.Childs) {
+                    if (li.Menu_Url.toLowerCase() == location.toLowerCase()) {
+                        isActive ="active treeview menu-open"
+                    }
+                }
+
+                content += `<li class=" ${isActive}">
                         <a href="#">
                             <i class="${item.Icon}"></i> <span>${item.Menu_Name}</span>
                             <span class="pull-right-container">
@@ -399,7 +411,6 @@ desired effect
                             </span>
                         </a>
                         <ul class="treeview-menu"> `;
-
               
 
                 for (let li of item.Childs) {
@@ -412,10 +423,7 @@ desired effect
             $("#menu_list").html(content);
         }
 
-        function ExpandMenu() {
-            let url = window.location.pathname;
-
-        }
+       
 
 
     </script>

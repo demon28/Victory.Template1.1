@@ -29,6 +29,16 @@ namespace Victory.Template.Entity.Enums
         元素权限=4
     }
 
+
+    /// <summary>
+    /// 权限操作类型
+    /// </summary>
+    public enum OpeartionType
+    {
+        功能操作=0,
+        页面访问=1
+    }
+
     /// <summary>
     /// 用户是否有允许登录项目
     /// </summary>

@@ -1448,4 +1448,8 @@
     <ProjectReference Include="..\Victory.Template.Facade\Victory.Template.Facade.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Right\" />
+  </ItemGroup>
+
 </Project>

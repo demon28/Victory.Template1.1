@@ -13,7 +13,14 @@ namespace Victory.Template.WebApp.Controllers
 {
     public class MenuController : TopControllerBase
     {
-        [Right(PowerName = "查询")]
+        [Permission(PowerName = "菜单管理")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+
+        [Permission(PowerName = "查询")]
         [HttpPost]
         public IActionResult List()
         {
@@ -25,7 +32,7 @@ namespace Victory.Template.WebApp.Controllers
 
 
 
-        [Right(PowerName = "添加")]
+        [Permission(PowerName = "添加")]
         [HttpPost]
         public IActionResult Add(Tright_Menu model)
         {
@@ -37,7 +44,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "修改")]
+        [Permission(PowerName = "修改")]
         [HttpPost]
         public IActionResult Update(Tright_Menu model)
         {
@@ -47,7 +54,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "删除")]
+        [Permission(PowerName = "删除")]
         [HttpPost]
         public IActionResult Del(int id)
         {

@@ -1,0 +1,415 @@
+
+
+<!--
+DA  v1.1
+2020-7-31
+Near
+-->
+
+@section Pageheader{
+    <h1>
+        <small> 菜单管理</small>
+
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">menu</li>
+    </ol>
+
+}
+
+
+
+<section class="content" id="tab">
+    <div class="row">
+
+        <!-- /.col -->
+        <div>
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">菜单列表</h3>
+
+                    <div class="box-tools">
+
+
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-sm btn-default pull-right" v-on:click="ShowAdd()" id="btn_Search">添加</button>
+                        </div>
+
+                        <div class="input-group input-group-sm hidden-xs  pull-right" style="width: 200px;">
+                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Search" id="txt_Search" v-model="keywork" v-on:keyup.13="Search" />
+
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default " v-on:click="Search()" v-on:keyup.13="Search" id="btn_Search"><i class="fa fa-search"></i></button>
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+
+                                <th>Id</th>
+                                <th>菜单名称</th>
+                                <th>菜单地址</th>
+                                <th>父节点</th>
+                                <th>状态</th>
+                                <th>图标</th>
+                                <th>排序Id</th>
+
+                                <th style="text-align:right">
+                                    操作
+                                </th>
+
+                            </tr>
+
+                            <template v-for="(item,index) in list">
+
+                                <tr>
+                                    <td> {{item.Id}}</td>
+                                    <td>
+                                        <i v-if="!item.ChildsShow" @@click="ChildsShow(item,true)" class="fa fa-plus-square-o"></i>
+                                        <i v-if="item.ChildsShow" @@click="ChildsShow(item,false)" class="fa  fa-minus-square-o"></i>
+
+                                        {{item.Menu_Name}}
+                                    </td>
+                                    <td> {{item.Menu_Url==null?"根目录":item.Menu_Url}}</td>
+                                    <td> {{item.Parent_Id}}</td>
+                                    <td>
+
+                                        <span class="label label-success" v-if="item.Status==0">启用</span>
+                                        <span class="label label-danger" v-if="item.Status==1">禁用</span>
+                                    </td>
+                                    <td> {{item.Icon}}</td>
+                                    <td> {{item.Sortid}}</td>
+
+                                    <td style="text-align:right">
+
+                                        <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(item)">修改</button>
+                                        &nbsp;      &nbsp;
+                                        <button type="button" class="btn bg-red btn-xs" v-on:click="Del(item)">删除</button>
+                                    </td>
+                                </tr>
+
+
+                                <tr v-for="(child,index) in item.Childs" v-if="item.ChildsShow">
+                                    <td> {{item.Id}}</td>
+                                    <td>
+                                        <span style="margin-left:30px">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
+
+                                        {{item.Menu_Name}}
+                                    </td>
+                                    <td> {{item.Menu_Url==null?"根目录":item.Menu_Url}}</td>
+                                    <td> {{item.Parent_Id}}</td>
+                                    <td>
+
+                                        <span class="label label-success" v-if="item.Status==0">启用</span>
+                                        <span class="label label-danger" v-if="item.Status==1">禁用</span>
+                                    </td>
+                                    <td> {{item.Icon}}</td>
+                                    <td> {{item.Sortid}}</td>
+
+                                    <td style="text-align:right">
+
+                                        <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(item)">修改</button>
+                                        &nbsp;      &nbsp;
+                                        <button type="button" class="btn bg-red btn-xs" v-on:click="Del(item)">删除</button>
+                                    </td>
+
+                                </tr>
+                            </template>
+
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+
+
+                <div class="box-footer no-padding">
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                    </div>
+
+                    <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
+
+                        <zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
+                                  v-bind:max-page="pageModel.ToTalPage" v-on:pagehandler="Init">
+                        </zpagenav>
+                    </div>
+
+
+                    <!-- /.pull-right -->
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- /.col -->
+    <!-- /.row -->
+
+
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="txt_username"> </h4>
+                </div>
+                <div class="modal-body">
+
+
+                    <form class="form-horizontal">
+
+
+                           
+                              <div class="form-group">
+                                <label for="txt_projectname" class="col-sm-3 control-label">菜单名称：</label>
+
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" v-model="info.Menu_Name">
+                                </div>
+                             </div>
+                              <div class="form-group">
+                                <label for="txt_projectname" class="col-sm-3 control-label">菜单地址：</label>
+
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" v-model="info.Menu_Url">
+                                </div>
+                             </div>
+                              <div class="form-group">
+                                <label for="txt_projectname" class="col-sm-3 control-label">父节点：</label>
+
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" v-model="info.Parent_Id">
+                                </div>
+                             </div>
+                              <div class="form-group">
+                                <label for="txt_projectname" class="col-sm-3 control-label">状态：</label>
+
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" v-model="info.Status">
+                                </div>
+                             </div>
+                              <div class="form-group">
+                                <label for="txt_projectname" class="col-sm-3 control-label">图标：</label>
+
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" v-model="info.Icon">
+                                </div>
+                             </div>
+                              <div class="form-group">
+                                <label for="txt_projectname" class="col-sm-3 control-label">排序id：</label>
+
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" v-model="info.Sortid">
+                                </div>
+                             </div>
+
+                    </form>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-right" v-on:click="Add()" v-if="operation=='add'">添 加</button>
+                    <button type="button" class="btn btn-primary pull-right" v-on:click="Update()" v-if="operation=='update'">修 改</button>
+
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关 闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
+
+</section>
+
+
+
+
+@section scripts{
+
+    <script>
+
+       var self;
+       var vm = new Vue({
+           el: "#tab",
+           data: {
+               list: [],
+               pageModel: {
+                    pageIndex: 1,
+                    pageSize: 15,
+                    TotalCount: 0,
+                    ToTalPage: 0,
+                },
+               operation: "add",
+               info: {},
+               keywork: ""
+           },
+           created: function () {
+               self=this;
+               self.Init(1);
+
+           },
+           mounted: function () {
+
+
+           },
+           methods: {
+
+               Init(index) {
+                  
+
+                   MyAjax({
+                       url: "/Menu/List",
+                       type: "POST",
+                       data: {
+                            pageIndex: index,
+                            pageSize: self.pageModel.pageSize,
+                            keyword: self.keywork,
+                       },
+                       success: function (result) {
+
+                       // console.log(JSON.stringify(result));
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+                          
+                        
+
+                           for (var i = 0; i < result.Content.length; i++) {
+
+                               let item = result.Content[i];
+                               item.ChildsShow = false;
+                               self.list.push(item);
+                           }
+
+
+
+                            self.pageModel.pageIndex = result.PageIndex;
+                            self.pageModel.pageSize = result.PageSize;
+                            self.pageModel.TotalCount = result.TotalCount;
+                            self.pageModel.ToTalPage = result.ToTalPage;
+                       }
+                   })
+               },
+
+               Del: function (item) {
+
+                   bootbox.confirm("您确定删除该记录吗？", function (res) {
+                       if (res) {
+
+                           MyAjax({
+                               url: "/Menu/Del",
+                               type: "POST",
+                               data: {
+                                   id: item.Id
+                               },
+                               success: function (result) {
+
+                                   if (!result.Success) {
+
+                                       alert_danger(result.Message);
+                                       return;
+                                   }
+                                   alert_success("删除成功");
+                                   self.Init(self.pageModel.pageIndex);
+
+                               }
+                           })
+                       }
+                   });
+
+
+
+               },
+               Add: function () {
+
+                   MyAjax({
+                       url: "/Menu/Add",
+                       type: "POST",
+                       data: self.info,
+                       success: function (result) {
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+                           $('#modal-default').modal('hide');
+                           alert_success(result.Message);
+                            self.Init(self.pageModel.pageIndex);
+
+                       }
+                   })
+               },
+               Update: function () {
+                   MyAjax({
+                       url: "/Menu/Update",
+                       type: "POST",
+                       data: self.info,
+                       success: function (result) {
+
+                           if (!result.Success) {
+
+                               alert_danger(result.Message);
+                               return;
+                           }
+                           $('#modal-default').modal('hide');
+                           alert_success(result.Message);
+                           self.Init(self.pageModel.pageIndex);
+
+                       }
+                   })
+
+               },
+               ShowUpdate: function (item) {
+                   this.operation = "update";
+                   $('#modal-default').modal('show');
+                   this.info = item;
+
+               },
+               ShowAdd() {
+
+                   this.operation = "add";
+                   this.info = {};
+                   $('#modal-default').modal('show');
+                   
+                 
+               },
+                Search: function () {
+                    self.Init(1);
+                },
+               ChildsShow(item, isShow) {
+
+                   item.ChildsShow = isShow;
+
+               }
+              
+              
+           },
+
+
+
+       });
+
+
+    </script>
+
+}

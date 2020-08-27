@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Victory.Template.WebApp.Controllers.System
+namespace Victory.Template.WebApp.Controllers
 {
+    [Authorize]
     public class SystemController : Controller
     {
-        public IActionResult Menu()
+     
+        public IActionResult Error()
         {
             return View();
         }
 
-        public IActionResult Log()
+        public IActionResult NoPermission()
         {
             return View();
         }

@@ -62,6 +62,16 @@ namespace Victory.Template.Entity.CodeGenerator
         ///</summary>
         public int Parent_Id { get; set; }
 
+        /// <summary>
+        /// 操作类型{0：按钮类请求，1，页面跳转}
+        /// </summary>
+        public int Type { get; set; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get; set; }
+        
     }
  }
 

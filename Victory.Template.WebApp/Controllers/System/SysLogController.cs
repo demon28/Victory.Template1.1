@@ -15,7 +15,10 @@ namespace Victory.Template.WebApp.Controllers
     [Authorize]
     public class SysLogController : TopControllerBase
     {
-        [Right(PowerName = "访问")]
+
+
+
+        [Permission(PowerName = "系统日志")]
         public IActionResult Index()
         {
             return View();
@@ -23,8 +26,7 @@ namespace Victory.Template.WebApp.Controllers
 
 
 
-
-        [Right(PowerName = "查询")]
+        [Permission(PowerName = "查询")]
         [HttpPost]
         public IActionResult List(string keyword,DateTime? keystartime, DateTime? keyendTime, int keytype, int pageIndex, int pageSize)
         {

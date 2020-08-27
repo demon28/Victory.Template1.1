@@ -15,14 +15,14 @@ namespace Victory.Template.WebApp.Controllers
     public class UserRightController : TopControllerBase
     {
 
-        [Right(PowerName = "用户角色")]
+        [Permission(PowerName = "用户角色")]
         public IActionResult Index()
         {
             return View();
         }
 
 
-        [Right(Ignore = true)]
+        [Permission(Ignore = true)]
         public IActionResult NoPermission() {
 
             return View();
@@ -31,7 +31,7 @@ namespace Victory.Template.WebApp.Controllers
 
       
 
-        [Right(PowerName = "功能配置")]
+        [Permission(PowerName = "功能配置")]
         public IActionResult Func()
         {
             return View();
@@ -42,7 +42,7 @@ namespace Victory.Template.WebApp.Controllers
 
 
 
-        [Right(PowerName = "查询功能")]
+        [Permission(PowerName = "查询功能")]
         [HttpPost]
         public IActionResult ListFunc()
         {
@@ -53,7 +53,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "添加功能")]
+        [Permission(PowerName = "添加功能")]
         [HttpPost]
         public IActionResult AddFunc(Tright_Power model)
         {
@@ -71,7 +71,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "修改功能")]
+        [Permission(PowerName = "修改功能")]
         [HttpPost]
         public IActionResult UpdateFunc(Tright_Power model)
         {
@@ -90,7 +90,7 @@ namespace Victory.Template.WebApp.Controllers
 
 
 
-        [Right(PowerName = "删除功能")]
+        [Permission(PowerName = "删除功能")]
         [HttpPost]
         public IActionResult DelFunc(int id)
         {

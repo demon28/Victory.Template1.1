@@ -188,8 +188,9 @@
 
                     console.log("日志类型", self.keytype);
 
-                    AjaxPost({
+                    MyAjax({
                         url: "/SysLog/List",
+                        type:"POST",
                         data: {
                             pageIndex: index,
                             pageSize: self.pageModel.pageSize,

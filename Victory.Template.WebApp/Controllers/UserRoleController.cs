@@ -19,7 +19,7 @@ namespace Victory.Template.WebApp.Controllers
             return View();
         }
 
-        [Right(PowerName = "角色管理")]
+        [Permission(PowerName = "角色管理")]
         public IActionResult Role()
         {
             return View();
@@ -28,7 +28,7 @@ namespace Victory.Template.WebApp.Controllers
 
 
 
-        [Right(PowerName = "添加角色")]
+        [Permission(PowerName = "添加角色")]
         [HttpPost]
         public IActionResult AddRole(Tright_Role model)
         {
@@ -45,7 +45,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "修改角色")]
+        [Permission(PowerName = "修改角色")]
         [HttpPost]
         public IActionResult UpdateRole(Tright_Role model)
         {
@@ -61,7 +61,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "角色查询")]
+        [Permission(PowerName = "角色查询")]
         [HttpPost]
         public IActionResult ListRole()
         {
@@ -70,7 +70,7 @@ namespace Victory.Template.WebApp.Controllers
             return SuccessResultList(da.Select.ToList());
         }
 
-        [Right(PowerName = "删除角色")]
+        [Permission(PowerName = "删除角色")]
         [HttpPost]
         public IActionResult DelRole(int id)
         {
@@ -94,7 +94,7 @@ namespace Victory.Template.WebApp.Controllers
         /// </summary>
         /// <param name="roleid"></param>
         /// <returns></returns>
-        [Right(PowerName = "角色功能配置")]
+        [Permission(PowerName = "角色功能配置")]
         [HttpPost]
         public IActionResult GetRolePowerMebmer(int roleid)
         {
@@ -112,7 +112,7 @@ namespace Victory.Template.WebApp.Controllers
 
 
 
-        [Right(PowerName = "角色关联功能")]
+        [Permission(PowerName = "角色关联功能")]
         [HttpPost]
         public IActionResult AddRolePowerMebmer(int roleid, int powerid)
         {
@@ -136,7 +136,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "角色取消功能")]
+        [Permission(PowerName = "角色取消功能")]
         [HttpPost]
         public IActionResult DeletedRolePowerMebmer(int id)
         {

@@ -12,14 +12,14 @@ namespace Victory.Template.WebApp.Controllers
     [Authorize]
     public class PeopleController : TopControllerBase
     {
-        [Right(PowerName = "人员信息")]
+        [Permission(PowerName = "人员信息")]
         public IActionResult Index()
         {
             return View();
         }
 
 
-        [Right(PowerName = "查询")]
+        [Permission(PowerName = "查询")]
         [HttpPost]
         public IActionResult List(string keyword,int pageIndex,int pageSize)
         {
@@ -36,7 +36,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "设置用户角色")]
+        [Permission(PowerName = "设置用户角色")]
         [HttpPost]
         public IActionResult GetAllRole()
         {
@@ -54,7 +54,7 @@ namespace Victory.Template.WebApp.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         /// 
-        [Right(PowerName = "分配权限")]
+        [Permission(PowerName = "分配权限")]
         [HttpPost]
         public IActionResult GetUserRoleMebmer(int userid)
         {
@@ -67,7 +67,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "用户关联角色")]
+        [Permission(PowerName = "用户关联角色")]
         [HttpPost]
         public IActionResult AddUserRoleMebmer(int userid, int roleid)
         {
@@ -90,7 +90,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Right(PowerName = "用户退出角色")]
+        [Permission(PowerName = "用户退出角色")]
         [HttpPost]
         public IActionResult DeleteUserRoleMebmer(int id)
         {

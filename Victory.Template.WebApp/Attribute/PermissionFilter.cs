@@ -6,14 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Victory.Template.DataAccess.CodeGenerator;
+using Victory.Template.Entity;
 using Victory.Template.Entity.CodeGenerator;
 using Victory.Template.Entity.Enums;
-using Victory.Template.Entity;
 
 namespace Victory.Template.WebApp.Attribute
 {
-    public class RightAttribute : ActionFilterAttribute
+    public class PermissionAttribute : ActionFilterAttribute
     {
+
         /// <summary>
         /// 忽略权限
         /// </summary>
@@ -25,30 +26,23 @@ namespace Victory.Template.WebApp.Attribute
         public string PowerName { get; set; }
 
 
-        public override void OnActionExecuting(ActionExecutingContext Context)
+        public  override void OnActionExecuting(ActionExecutingContext Context)
         {
-            base.OnActionExecuting(Context);
-
-
             //先取出登录用户id
             int userid = int.Parse(Context.HttpContext.User.FindFirst("userId").Value);
 
-
             //根据配置文件决定是否给初次登录的用户 分配一个默认的登录角色
-            
+
             if (AppConfig.IsSetDefautlRole)
             {
                 SetDefaultRole(userid);
-
             }
-
 
             //如果Ignore 为true 则表示不检查该操作，这里只给他初次登录分配 普通会员角色
             if (Ignore)
             {
                 return;
             }
-
 
             //获取路由地址
 
@@ -58,14 +52,12 @@ namespace Victory.Template.WebApp.Attribute
 
             string page = GetPageUrl(Context, ref areaName, ref controllerName, ref actionName);
 
-
-
-            //判断请求的 为访问页面 还是 请求功能操作 Ajax请求为功能， 非ajax请求为访问页面
+            //判断请求的是否是ajax 请求
             var isAjax = Context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
 
 
-            //判断数据库是否存在该权限，不存则自动添加，无需手动配置
-            AddActionFunc(controllerName, actionName, areaName, page, isAjax);
+            //判断数据库是否存在该权限，不存则自动添加，无需手动配置,减少开发中的配置工作
+            InsertActionOperation(controllerName, actionName, areaName, page, isAjax);
 
 
             //如果全局配置忽略权限，则忽略检测
@@ -75,12 +67,14 @@ namespace Victory.Template.WebApp.Attribute
             }
 
 
-            ////若该用户存在该页面权限，则直接return
-            //Tright_User_Role_Da userrole = new Tright_User_Role_Da();
-            //if (userrole.ListByVm(userid, page).Count() > 0)
-            //{
-            //    return;
-            //}
+            Tright_Operation_Da da = new Tright_Operation_Da();
+
+            var list = da.ListByUserId(userid);   //此处应该用Redis 缓存用户权限
+
+            if (list.Where(s => s.Url.ToLower()==page.ToLower()).ToList().Count() > 0)
+            {
+                return;   //有权限
+            }
 
 
             //是否ajax请求，是ajax 则判定为 请求操作， 非ajax则判定为 访问页面
@@ -95,11 +89,55 @@ namespace Victory.Template.WebApp.Attribute
             //跳转指定的没有权限的页面
             Context.Result = new RedirectToRouteResult(new RouteValueDictionary(new
             {
-                controller = "UserRight",
+                controller = "System",
                 action = "NoPermission"
-            })); 
+            }));
+        }
+
+
+
+        /// <summary>
+        /// 增加页面操作配置
+        /// </summary>
+        /// <param name="controllerName"></param>
+        /// <param name="actionName"></param>
+        /// <param name="areaName"></param>
+        /// <param name="page"></param>
+        /// <param name="isAjax"></param>
+        private void InsertActionOperation(string controllerName, string actionName, string areaName, string page, bool isAjax)
+        {
+
+            Tright_Operation_Da  da = new Tright_Operation_Da();
+
+            bool HasPage = da.Select.Where(s => s.Url.ToLower() == page.ToLower()).Count() > 0;
+
+            if (HasPage)
+            {
+                return;
+            }
+
+
+            //获取功能归属哪个页面
+            Tright_Operation root = da.Where(s => s.Controller == controllerName && s.Type == (int)OpeartionType.页面访问).First();
+
+            Tright_Operation model = new Tright_Operation();
+
+            model.Action = actionName;
+            model.Area = areaName;
+            model.Code = Guid.NewGuid().ToString();
+            model.Controller = controllerName;
+            model.Parent_Id = isAjax ? root.Id:0;
+            model.Sortid = 0;
+            model.Status = 0;
+            model.Type = isAjax ? (int)OpeartionType.功能操作 : (int)OpeartionType.页面访问;
+            model.Url = page;
+            model.Name = PowerName;
             
-            return;
+
+            da.Insert(model);
+
+
+
 
         }
 
@@ -108,8 +146,8 @@ namespace Victory.Template.WebApp.Attribute
         /// 给用户设置默认登录角色
         /// </summary>
         /// <returns></returns>
-
-        public void SetDefaultRole(int userid) {
+        public void SetDefaultRole(int userid)
+        {
 
             Tright_User_Role_Da userrole = new Tright_User_Role_Da();
 
@@ -123,7 +161,6 @@ namespace Victory.Template.WebApp.Attribute
 
                 userrole.Insert(userolemodel);
             }
-
         }
 
         /// <summary>
@@ -131,7 +168,8 @@ namespace Victory.Template.WebApp.Attribute
         /// </summary>
         /// <param name="Context"></param>
         /// <returns></returns>
-        public string GetPageUrl(ActionExecutingContext Context, ref string areaName,ref string controllerName, ref string actionName) {
+        public string GetPageUrl(ActionExecutingContext Context, ref string areaName, ref string controllerName, ref string actionName)
+        {
 
 
             if (Context.ActionDescriptor.RouteValues.ContainsKey("area"))
@@ -147,8 +185,6 @@ namespace Victory.Template.WebApp.Attribute
                 actionName = Context.ActionDescriptor.RouteValues["action"].ToString();
             }
 
-
-
             var page = "/" + controllerName + "/" + actionName;
 
             if (!string.IsNullOrEmpty(areaName))
@@ -157,57 +193,6 @@ namespace Victory.Template.WebApp.Attribute
             }
 
             return page;
-
-        }
-
-
-        /// <summary>
-        /// 根据Action自动添加功能
-        /// </summary>
-        /// <returns></returns>
-        public void AddActionFunc(string controllerName,string actionName,string areaName,string page,bool isAjax)
-        {
-
-
-            ////数据库是否存在该页面配置
-            //Tright_Power_Da pwmanager = new Tright_Power_Da();
-            //bool HasPage = pwmanager.Where(s => s..ToLower() == page.ToLower()).Count() <= 0;
-
-
-            //if (HasPage)
-            //{
-
-            //    Tright_Power powermodel = new Tright_Power
-            //    {
-            //        Controller = controllerName,
-            //        Action = actionName,
-            //        Area = areaName,
-            //        Powername = PowerName,
-            //        Pageurl = page.ToLower()
-            //    };
-
-            //    if (isAjax)
-            //    {
-            //        // 添加一个功能功能操作的权限
-            //        var m = pwmanager.Where(s => s.Controller == controllerName && s.Powertype == (int)PowerType.页面访问).First();
-
-            //        powermodel.Parentid = m.Id;
-            //        powermodel.Powertype = (int)PowerType.功能权限;
-
-            //    }
-            //    else
-            //    {
-            //        //添加一个 页面访问 权限
-            //        powermodel.Parentid = 0;
-            //        powermodel.Powertype = (int)PowerType.菜单权限;
-
-            //    }
-
-            //    pwmanager.Insert(powermodel);
-
-           // }
-
-
 
         }
 
