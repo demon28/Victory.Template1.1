@@ -57,14 +57,14 @@ namespace Victory.Template.WebApp.Controllers
         [HttpPost]
         public IActionResult AddFunc(Tright_Power model)
         {
-            if (string.IsNullOrEmpty(model.Powername))
-            {
-                return FailMessage("权限名不能为空！");
-            }
+           // if (string.IsNullOrEmpty(model.Powername))
+           // {
+           //     return FailMessage("权限名不能为空！");
+           // }
 
-           Tright_Power_Da da = new Tright_Power_Da();
+           //Tright_Power_Da da = new Tright_Power_Da();
 
-            da.Insert(model);
+           // da.Insert(model);
 
             return SuccessMessage("成功！");
   
@@ -76,13 +76,13 @@ namespace Victory.Template.WebApp.Controllers
         public IActionResult UpdateFunc(Tright_Power model)
         {
 
-            if (string.IsNullOrEmpty(model.Powername))
-            {
-                return FailMessage("权限名不能为空！");
-            }
+           // if (string.IsNullOrEmpty(model.Powername))
+           // {
+           //     return FailMessage("权限名不能为空！");
+           // }
 
-           Tright_Power_Da da = new Tright_Power_Da();
-           da.Update(model);
+           //Tright_Power_Da da = new Tright_Power_Da();
+           //da.Update(model);
 
            return SuccessMessage("成功！");
            

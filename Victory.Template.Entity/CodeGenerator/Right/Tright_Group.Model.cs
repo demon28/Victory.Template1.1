@@ -5,9 +5,7 @@
 //---------------
 
 using FreeSql.DataAnnotations;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -16,12 +14,12 @@ using System.Text;
 namespace Victory.Template.Entity.CodeGenerator
 {
     /// <summary>
-    ///  
+    ///  用户组表
     ///</summary>
-    public class   Tright_Menu
+    public class   Tright_Group
     {
 
-       public Tright_Menu()
+       public Tright_Group()
        {
       
        }
@@ -32,13 +30,9 @@ namespace Victory.Template.Entity.CodeGenerator
         [Column(IsIdentity = true, IsPrimary = true)]
         public int Id { get; set; }
         ///<summary>
-        ///描述：菜单名
+        ///描述：组名
         ///</summary>
-        public string Menu_Name { get; set; }
-        ///<summary>
-        ///描述：菜单地址
-        ///</summary>
-        public string Menu_Url { get; set; }
+        public string Group_Name { get; set; }
         ///<summary>
         ///描述：父id
         ///</summary>
@@ -47,19 +41,6 @@ namespace Victory.Template.Entity.CodeGenerator
         ///描述：状态{0：正常，1：禁用}
         ///</summary>
         public int Status { get; set; }
-        ///<summary>
-        ///描述：icon图标
-        ///</summary>
-        public string Icon { get; set; }
-        ///<summary>
-        ///描述：排序id
-        ///</summary>
-        public int Sortid { get; set; }
-
-        [JsonIgnore]
-        public Tright_Power Parent { get; set; }
-
-        public List<Tright_Menu> Childs { get; set; }
 
     }
  }

@@ -190,88 +190,8 @@ desired effect
                 <ul class="sidebar-menu" data-widget="tree" id="menu_list">
 
 
-                    <li class=" treeview">
-                        <a href="#">
-                            <i class="fa fa-dashboard"></i> <span>工作台</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="/AssetClassify/Index"><i class="fa  fa-lemon-o"></i> 数据报表</a></li>
-                           
-                        </ul>
-                    </li>
-
-
-                    <li class=" treeview">
-                        <a href="#">
-                            <i class="fa  fa-laptop"></i> <span>资产维护</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="/AssetClassify/Index"><i class="fa  fa-lemon-o"></i> 资产分类</a></li>
-                            <li><a href="/AssetStore/Index"><i class="fa fa-map-marker"></i> 资产存放地</a></li>
-                            <li><a href="/AssetAllocation/Index"><i class="fa fa-inbox"></i> 资产配置</a></li>
-                            <li><a href="/AssetExchange/Index"><i class="fa  fa-file-code-o"></i> 资产流转</a></li>
-                            <li><a href="/AssetDepreciation/Index"><i class="fa fa-print"></i> 资产折旧</a></li>
-                        </ul>
-                    </li>
-
-
-                    <li class=" treeview">
-                        <a href="#">
-                            <i class="fa fa-tasks"></i> <span>耗材管理</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="/ConsumableClassify/Index"><i class="fa fa-reorder"></i> 耗材分类</a></li>
-                            <li><a href="/ConsumableStore/Index"><i class="fa fa-object-ungroup"></i> 耗材存放地</a></li>
-                            <li><a href="/ConsumablePurchases/Index"><i class="fa fa-sticky-note-o"></i> 购置清单</a></li>
-                            <li><a href="/ConsumableMaintain/Index"><i class="fa  fa-compass"></i>耗材维护</a></li>
-
-                        </ul>
-                    </li>
-
-
-                    <li class=" treeview">
-                        <a href="#">
-                            <i class="fa  fa-line-chart"></i> <span>数据报表</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="/Report/Index"><i class="fa fa-video-camera"></i> 看板视图</a></li>
-
-                        </ul>
-                    </li>
-
-
-                    <li class="active treeview">
-                        <a href="#">
-                            <i class="fa fa-cogs"></i> <span>系统管理</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="/People/Index"><i class="fa fa-user"></i> 人员信息</a></li>
-                            <li><a href="/UserRole/Role"><i class="fa  fa-user-plus"></i> 角色管理</a></li>
-                            <li><a href="/UserRight/Func"><i class="fa fa-random"></i> 功能配置</a></li>
-                            <li><a href="/SysLog/Index"><i class="fa fa-hand-rock-o"></i> 系统日志</a></li>
-                        </ul>
-                    </li>
-
-
 
                 </ul>
-
-
 
 
                 <!-- /.sidebar-menu -->
@@ -419,6 +339,7 @@ desired effect
     <script>
 
          // vue 嵌套挂载，有数据，问题，所以这用JQ 绑定一下数据 Layout 不适合用uve
+        //本框架，缺点 目前之支持2级别菜单。 其实 多一级循环就可以支持三级菜单，等有具体需求的时候 再实现吧
 
         $(document).ready(function () {
 
@@ -432,12 +353,14 @@ desired effect
                         alert_info(res.Message);
                         return;
                     }
+                      //  console.log(res);
 
                     var _self = {};
-                    _self.userId = res.Content.userId;
-                    _self.userName = res.Content.userName;
-                    _self.sex = res.Content.sex;
-                    _self.workId = res.Content.workId;
+                    _self.userId = res.Content.UserId;
+                    _self.userName = res.Content.UserName;
+                    _self.sex = res.Content.Sex;
+                    _self.workId = res.Content.WorkId;
+                    _self.menu = res.Content.Menu;
 
                     $(".username").html(_self.userName + " [" + _self.workId + "]");
 
@@ -447,16 +370,52 @@ desired effect
                         imgurl = "/AdminLte/img/user4-128x128.jpg"
                     }
 
-                    $("#img_toplogo").attr("src", imgurl)
-                    $("#img_rightlogo").attr("src", imgurl)
-                    $("#image_leftlogo").attr("src", imgurl)
+                    $("#img_toplogo").attr("src", imgurl);
+                    $("#img_rightlogo").attr("src", imgurl);
+                    $("#image_leftlogo").attr("src", imgurl);
 
+
+                    //加载菜单
+                    LoadMenu(_self.menu);
+
+                    //展开当前菜单  
+                    ExpandMenu();
                 }
 
             });
         });
 
-        
+        function LoadMenu(list) {
+            //console.log(list);
+            let content = "";
+
+            for (let item of list) {
+
+                content += `<li class=" treeview">
+                        <a href="#">
+                            <i class="${item.Icon}"></i> <span>${item.Menu_Name}</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu"> `;
+
+              
+
+                for (let li of item.Childs) {
+                    content += `<li><a href="${li.Menu_Url}"><i class="${li.Icon}"></i> ${li.Menu_Name}</a></li>`
+                }
+
+                content += `</ul> </li>`;
+            }
+
+            $("#menu_list").html(content);
+        }
+
+        function ExpandMenu() {
+            let url = window.location.pathname;
+
+        }
 
 
     </script>

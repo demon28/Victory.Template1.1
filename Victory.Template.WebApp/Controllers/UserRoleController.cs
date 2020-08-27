@@ -32,7 +32,7 @@ namespace Victory.Template.WebApp.Controllers
         [HttpPost]
         public IActionResult AddRole(Tright_Role model)
         {
-            if (string.IsNullOrEmpty(model.Rolename))
+            if (string.IsNullOrEmpty(model.Role_Name))
             {
                 return FailMessage("角色名不能为空！");
             }
@@ -50,7 +50,7 @@ namespace Victory.Template.WebApp.Controllers
         public IActionResult UpdateRole(Tright_Role model)
         {
 
-            if (string.IsNullOrEmpty(model.Rolename))
+            if (string.IsNullOrEmpty(model.Role_Name))
             {
                 return FailMessage("角色名不能为空！");
             }
@@ -99,7 +99,7 @@ namespace Victory.Template.WebApp.Controllers
         public IActionResult GetRolePowerMebmer(int roleid)
         {
             Tright_Role_Power_Da userroleManage = new Tright_Role_Power_Da();
-            var list = userroleManage.Select.Where(s => s.Roleid == roleid).ToList();
+            var list = userroleManage.Select.Where(s => s.Role_Id == roleid).ToList();
 
             return SuccessResultList(list);
 
@@ -116,21 +116,21 @@ namespace Victory.Template.WebApp.Controllers
         [HttpPost]
         public IActionResult AddRolePowerMebmer(int roleid, int powerid)
         {
-            Tright_Role_Power_Da Manage = new Tright_Role_Power_Da();
+            //Tright_Role_Power_Da Manage = new Tright_Role_Power_Da();
 
-            if (Manage.Select.Where(s => s.Roleid == roleid && s.Powerid == powerid).Count() > 0)
-            {
-                return SuccessMessage("请不要反复添加！");
-            }
+            //if (Manage.Select.Where(s => s.Roleid == roleid && s.Powerid == powerid).Count() > 0)
+            //{
+            //    return SuccessMessage("请不要反复添加！");
+            //}
 
 
 
-            Tright_Role_Power model = new Tright_Role_Power
-            {
-                Roleid = roleid,
-                Powerid = powerid
-            };
-            Manage.Insert(model);
+            //Tright_Role_Power model = new Tright_Role_Power
+            //{
+            //    Role_Id = roleid,
+            //    Power_Id = powerid
+            //};
+            //Manage.Insert(model);
 
             return SuccessMessage("已添加！");
         }

@@ -19,13 +19,7 @@ namespace Victory.Template.DataAccess.CodeGenerator
         }
 
 
-        public List<Vright_Eam> ListByVm(int userid, string pageurl)
-        {
-
-            return DataAccess.DbContext.Db.Select<Vright_Eam>().Where(s => s.Userid == userid && s.Pageurl.ToLower() == pageurl.ToLower()).ToList();
-
-        }
-
+      
     }
 
 }

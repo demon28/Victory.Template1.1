@@ -1,14 +1,20 @@
+//----------------
+//DA  v1.1
+//2020-7-31
+//Near
+//---------------
+
 using FreeSql.DataAnnotations;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-
 
 
 namespace Victory.Template.Entity.CodeGenerator
 {
     /// <summary>
-    ///  角色表
+    ///  
     ///</summary>
     public class   Tright_Role
     {
@@ -17,26 +23,23 @@ namespace Victory.Template.Entity.CodeGenerator
        {
       
        }
+
+        ///<summary>
+        ///描述：主键
+        ///</summary>
         [Column(IsIdentity = true, IsPrimary = true)]
-        ///<summary>
-        ///描述：
-        ///</summary>
         public int Id { get; set; }
-        
         ///<summary>
-        ///描述：角色名称
+        ///描述：角色名
         ///</summary>
-        public string Rolename { get; set; }
-        
+        public string Role_Name { get; set; }
         ///<summary>
-        ///描述：
+        ///描述：状态{0：正常，1：禁用}
         ///</summary>
-        public string Remarks { get; set; }
-        
+        public int Status { get; set; }
 
     }
  }
-
 
 
 

@@ -59,7 +59,7 @@ namespace Victory.Template.WebApp.Controllers
         public IActionResult GetUserRoleMebmer(int userid)
         {
             Tright_User_Role_Da userroleManage = new Tright_User_Role_Da();
-            var list = userroleManage.Select.Where(s => s.Userid == userid).ToList();
+            var list = userroleManage.Select.Where(s => s.User_Id == userid).ToList();
 
             return SuccessResultList(list);
 
@@ -73,7 +73,7 @@ namespace Victory.Template.WebApp.Controllers
         {
             Tright_User_Role_Da userroleManage = new Tright_User_Role_Da();
 
-            if (userroleManage.Select.Where(s => s.Roleid == roleid && s.Userid == userid).Count() > 0)
+            if (userroleManage.Select.Where(s => s.Role_Id == roleid && s.User_Id == userid).Count() > 0)
             {
                 return SuccessMessage("请不要反复添加！");
             }
@@ -81,8 +81,8 @@ namespace Victory.Template.WebApp.Controllers
 
             Tright_User_Role model = new Tright_User_Role
             {
-                Roleid = roleid,
-                Userid = userid
+                Role_Id = roleid,
+                User_Id = userid
             };
             userroleManage.Insert(model);
 

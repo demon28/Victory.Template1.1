@@ -24,7 +24,7 @@ namespace Victory.Template.Entity.CodeGenerator
        }
 
         public int Userid { get; set; }
-        public int? Roleid { get; set; }
+        public int Roleid { get; set; }
         public string Role_Name { get; set; }
         public string Username { get; set; }
         public string Workid { get; set; }

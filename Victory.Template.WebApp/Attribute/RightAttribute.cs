@@ -75,12 +75,12 @@ namespace Victory.Template.WebApp.Attribute
             }
 
 
-            //若该用户存在该页面权限，则直接return
-            Tright_User_Role_Da userrole = new Tright_User_Role_Da();
-            if (userrole.ListByVm(userid, page).Count() > 0)
-            {
-                return;
-            }
+            ////若该用户存在该页面权限，则直接return
+            //Tright_User_Role_Da userrole = new Tright_User_Role_Da();
+            //if (userrole.ListByVm(userid, page).Count() > 0)
+            //{
+            //    return;
+            //}
 
 
             //是否ajax请求，是ajax 则判定为 请求操作， 非ajax则判定为 访问页面
@@ -113,12 +113,12 @@ namespace Victory.Template.WebApp.Attribute
 
             Tright_User_Role_Da userrole = new Tright_User_Role_Da();
 
-            if (userrole.Where(s => s.Userid == userid).Count() <= 0)
+            if (userrole.Where(s => s.User_Id == userid).Count() <= 0)
             {
                 Tright_User_Role userolemodel = new Tright_User_Role()
                 {
-                    Roleid = 1,   //默认1为普通会员
-                    Userid = userid
+                    Role_Id = 1,   //默认1为普通会员
+                    User_Id = userid
                 };
 
                 userrole.Insert(userolemodel);
@@ -169,43 +169,43 @@ namespace Victory.Template.WebApp.Attribute
         {
 
 
-            //数据库是否存在该页面配置
-            Tright_Power_Da pwmanager = new Tright_Power_Da();
-            bool HasPage = pwmanager.Where(s => s.Pageurl.ToLower() == page.ToLower()).Count() <= 0;
+            ////数据库是否存在该页面配置
+            //Tright_Power_Da pwmanager = new Tright_Power_Da();
+            //bool HasPage = pwmanager.Where(s => s..ToLower() == page.ToLower()).Count() <= 0;
 
 
-            if (HasPage)
-            {
+            //if (HasPage)
+            //{
 
-                Tright_Power powermodel = new Tright_Power
-                {
-                    Controller = controllerName,
-                    Action = actionName,
-                    Area = areaName,
-                    Powername = PowerName,
-                    Pageurl = page.ToLower()
-                };
+            //    Tright_Power powermodel = new Tright_Power
+            //    {
+            //        Controller = controllerName,
+            //        Action = actionName,
+            //        Area = areaName,
+            //        Powername = PowerName,
+            //        Pageurl = page.ToLower()
+            //    };
 
-                if (isAjax)
-                {
-                    // 添加一个功能功能操作的权限
-                    var m = pwmanager.Where(s => s.Controller == controllerName && s.Powertype == (int)PowerType.页面访问).First();
+            //    if (isAjax)
+            //    {
+            //        // 添加一个功能功能操作的权限
+            //        var m = pwmanager.Where(s => s.Controller == controllerName && s.Powertype == (int)PowerType.页面访问).First();
 
-                    powermodel.Parentid = m.Id;
-                    powermodel.Powertype = (int)PowerType.功能操作;
+            //        powermodel.Parentid = m.Id;
+            //        powermodel.Powertype = (int)PowerType.功能权限;
 
-                }
-                else
-                {
-                    //添加一个 页面访问 权限
-                    powermodel.Parentid = 0;
-                    powermodel.Powertype = (int)PowerType.页面访问;
+            //    }
+            //    else
+            //    {
+            //        //添加一个 页面访问 权限
+            //        powermodel.Parentid = 0;
+            //        powermodel.Powertype = (int)PowerType.菜单权限;
 
-                }
+            //    }
 
-                pwmanager.Insert(powermodel);
+            //    pwmanager.Insert(powermodel);
 
-            }
+           // }
 
 
 

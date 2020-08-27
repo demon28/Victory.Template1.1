@@ -32,5 +32,9 @@ namespace Victory.Template.Entity.Model
         /// 菜单
         /// </summary>
         public List<Tright_Menu> Menu { get; set; }
+
+
+
+
     }
 }

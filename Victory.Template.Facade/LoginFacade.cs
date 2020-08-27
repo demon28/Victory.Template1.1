@@ -40,11 +40,7 @@ namespace Victory.Template.Facade
         }
 
 
-        public List<Tright_Menu> GetUserMenu() { 
-        
-           
-        
-        }
+       
 
     }
 }

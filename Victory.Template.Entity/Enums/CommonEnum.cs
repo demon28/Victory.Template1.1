@@ -22,11 +22,16 @@ namespace Victory.Template.Entity.Enums
     /// </summary>
     public enum PowerType
     {
-        系统菜单 = 0,
-        页面访问 = 1,
-        功能操作 = 2
+
+        菜单权限 = 1,
+        功能权限 = 2,
+        文件权限 = 3,
+        元素权限=4
     }
 
+    /// <summary>
+    /// 用户是否有允许登录项目
+    /// </summary>
     public enum IsAdmin
     {
         非系统用户=0,
