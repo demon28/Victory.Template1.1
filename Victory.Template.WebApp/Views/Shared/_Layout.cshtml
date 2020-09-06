@@ -348,6 +348,7 @@ desired effect
             MyAjax({
                 type: "POST",
                 url: '/Home/GetLoginUser',
+                showloading:false,
                 success: function (res) {
                     if (!res.Success) {
                         alert_info(res.Message);

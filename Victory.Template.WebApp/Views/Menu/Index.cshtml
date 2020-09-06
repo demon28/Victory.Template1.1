@@ -33,17 +33,17 @@ Near
 
 
                         <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
-                            <button type="button" class="btn btn-sm btn-default pull-right" v-on:click="ShowAdd()" id="btn_Search">添加</button>
+                            <button type="button" class="btn btn-sm btn-primary pull-right" v-on:click="ShowAdd()" id="btn_Search">添加</button>
                         </div>
 
-                        <div class="input-group input-group-sm hidden-xs  pull-right" style="width: 200px;">
+                        @*<div class="input-group input-group-sm hidden-xs  pull-right" style="width: 200px;">
                             <input type="text" name="table_search" class="form-control pull-right" placeholder="Search" id="txt_Search" v-model="keywork" v-on:keyup.13="Search" />
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default " v-on:click="Search()" v-on:keyup.13="Search" id="btn_Search"><i class="fa fa-search"></i></button>
                             </div>
 
-                        </div>
+                        </div>*@
 
 
 
@@ -102,27 +102,27 @@ Near
 
 
                                 <tr v-for="(child,index) in item.Childs" v-if="item.ChildsShow">
-                                    <td> {{item.Id}}</td>
+                                    <td> {{child.Id}}</td>
                                     <td>
                                         <span style="margin-left:30px">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
 
-                                        {{item.Menu_Name}}
+                                        {{child.Menu_Name}}
                                     </td>
-                                    <td> {{item.Menu_Url==null?"根目录":item.Menu_Url}}</td>
-                                    <td> {{item.Parent_Id}}</td>
+                                    <td> {{child.Menu_Url==null?"根目录":item.Menu_Url}}</td>
+                                    <td> {{child.Parent_Id}}</td>
                                     <td>
 
                                         <span class="label label-success" v-if="item.Status==0">启用</span>
                                         <span class="label label-danger" v-if="item.Status==1">禁用</span>
                                     </td>
-                                    <td> {{item.Icon}}</td>
-                                    <td> {{item.Sortid}}</td>
+                                    <td> {{child.Icon}}</td>
+                                    <td> {{child.Sortid}}</td>
 
                                     <td style="text-align:right">
 
-                                        <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(item)">修改</button>
+                                        <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(child)">修改</button>
                                         &nbsp;      &nbsp;
-                                        <button type="button" class="btn bg-red btn-xs" v-on:click="Del(item)">删除</button>
+                                        <button type="button" class="btn bg-red btn-xs" v-on:click="Del(child)">删除</button>
                                     </td>
 
                                 </tr>
@@ -142,9 +142,9 @@ Near
 
                     <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
 
-                        <zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
+                        @*<zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
                                   v-bind:max-page="pageModel.ToTalPage" v-on:pagehandler="Init">
-                        </zpagenav>
+                        </zpagenav>*@
                     </div>
 
 
@@ -249,12 +249,12 @@ Near
            el: "#tab",
            data: {
                list: [],
-               pageModel: {
-                    pageIndex: 1,
-                    pageSize: 15,
-                    TotalCount: 0,
-                    ToTalPage: 0,
-                },
+               //pageModel: {
+               //     pageIndex: 1,
+               //     pageSize: 15,
+               //     TotalCount: 0,
+               //     ToTalPage: 0,
+               // },
                operation: "add",
                info: {},
                keywork: ""
@@ -270,16 +270,16 @@ Near
            },
            methods: {
 
-               Init(index) {
+               Init() {
                   
 
                    MyAjax({
                        url: "/Menu/List",
                        type: "POST",
                        data: {
-                            pageIndex: index,
-                            pageSize: self.pageModel.pageSize,
-                            keyword: self.keywork,
+                          //  pageIndex: index,
+                         //   pageSize: self.pageModel.pageSize,
+                         //   keyword: self.keywork,
                        },
                        success: function (result) {
 
@@ -291,7 +291,7 @@ Near
                                return;
                            }
                           
-                        
+                           self.list = [];
 
                            for (var i = 0; i < result.Content.length; i++) {
 
@@ -302,10 +302,10 @@ Near
 
 
 
-                            self.pageModel.pageIndex = result.PageIndex;
-                            self.pageModel.pageSize = result.PageSize;
-                            self.pageModel.TotalCount = result.TotalCount;
-                            self.pageModel.ToTalPage = result.ToTalPage;
+                            //self.pageModel.pageIndex = result.PageIndex;
+                            //self.pageModel.pageSize = result.PageSize;
+                            //self.pageModel.TotalCount = result.TotalCount;
+                            //self.pageModel.ToTalPage = result.ToTalPage;
                        }
                    })
                },
@@ -329,7 +329,7 @@ Near
                                        return;
                                    }
                                    alert_success("删除成功");
-                                   self.Init(self.pageModel.pageIndex);
+                                   self.Init();
 
                                }
                            })
@@ -354,7 +354,7 @@ Near
                            }
                            $('#modal-default').modal('hide');
                            alert_success(result.Message);
-                            self.Init(self.pageModel.pageIndex);
+                           self.Init();
 
                        }
                    })
@@ -373,7 +373,7 @@ Near
                            }
                            $('#modal-default').modal('hide');
                            alert_success(result.Message);
-                           self.Init(self.pageModel.pageIndex);
+                           self.Init();
 
                        }
                    })

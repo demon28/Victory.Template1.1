@@ -3,11 +3,19 @@
 //此方法必须放在bootbox.js后引用，因为网络请求，需要转菊花
 function MyAjax(ajaxjson) {
 
+    console.log("======",ajaxjson.showloading)
 
-    var dialog =   bootbox.dialog({
-        message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>',
-        closeButton: false
-    })
+
+    //此处加上 加载提示，避免网速快时显示框框 影响体验感。
+
+    var dialog;
+    if (ajaxjson.showloading === true || typeof (ajaxjson.showloading) === "undefined") {
+         dialog = bootbox.dialog({
+            message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>',
+            closeButton: false
+        })
+    }
+  
 
 
     $.ajax({
@@ -16,8 +24,9 @@ function MyAjax(ajaxjson) {
         data: ajaxjson.data,
         success: (result) => {
 
-
-            dialog.modal('hide');
+            if (ajaxjson.showloading === true || typeof (ajaxjson.showloading) === "undefined") {
+                dialog.modal('hide');
+            }
 
             if (result.Code === 302) {
                 console.log("请配置权限");

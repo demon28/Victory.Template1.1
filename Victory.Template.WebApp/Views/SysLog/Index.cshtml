@@ -182,6 +182,9 @@
 
                 Init: function (index) {
 
+
+                   
+
                     //时间控件，不能用v-model 双向绑定
                     self.condition.keystartime = $("#txt_stardate").val();
                     self.condition.keyendTime = $("#txt_enddate").val();
@@ -199,6 +202,8 @@
                             keystartime: self.condition.keystartime,
                             keyendTime: self.condition.keyendTime,
                         },
+                       showloading: false,
+
                         success: function (result) {
 
                             console.log(result);
