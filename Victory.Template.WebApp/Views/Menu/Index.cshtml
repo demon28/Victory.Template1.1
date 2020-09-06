@@ -36,16 +36,6 @@ Near
                             <button type="button" class="btn btn-sm btn-primary pull-right" v-on:click="ShowAdd()" id="btn_Search">添加</button>
                         </div>
 
-                        @*<div class="input-group input-group-sm hidden-xs  pull-right" style="width: 200px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Search" id="txt_Search" v-model="keywork" v-on:keyup.13="Search" />
-
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default " v-on:click="Search()" v-on:keyup.13="Search" id="btn_Search"><i class="fa fa-search"></i></button>
-                            </div>
-
-                        </div>*@
-
-
 
 
                     </div>
@@ -108,7 +98,7 @@ Near
 
                                         {{child.Menu_Name}}
                                     </td>
-                                    <td> {{child.Menu_Url==null?"根目录":item.Menu_Url}}</td>
+                                    <td> {{child.Menu_Url==null?"根目录":child.Menu_Url}}</td>
                                     <td> {{child.Parent_Id}}</td>
                                     <td>
 
@@ -142,9 +132,7 @@ Near
 
                     <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
 
-                        @*<zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
-                                  v-bind:max-page="pageModel.ToTalPage" v-on:pagehandler="Init">
-                        </zpagenav>*@
+                     
                     </div>
 
 
@@ -249,12 +237,6 @@ Near
            el: "#tab",
            data: {
                list: [],
-               //pageModel: {
-               //     pageIndex: 1,
-               //     pageSize: 15,
-               //     TotalCount: 0,
-               //     ToTalPage: 0,
-               // },
                operation: "add",
                info: {},
                keywork: ""
@@ -276,14 +258,10 @@ Near
                    MyAjax({
                        url: "/Menu/List",
                        type: "POST",
-                       data: {
-                          //  pageIndex: index,
-                         //   pageSize: self.pageModel.pageSize,
-                         //   keyword: self.keywork,
-                       },
+                       data: { },
                        success: function (result) {
 
-                       // console.log(JSON.stringify(result));
+                        console.log(JSON.stringify(result));
 
                            if (!result.Success) {
 
@@ -302,10 +280,6 @@ Near
 
 
 
-                            //self.pageModel.pageIndex = result.PageIndex;
-                            //self.pageModel.pageSize = result.PageSize;
-                            //self.pageModel.TotalCount = result.TotalCount;
-                            //self.pageModel.ToTalPage = result.ToTalPage;
                        }
                    })
                },

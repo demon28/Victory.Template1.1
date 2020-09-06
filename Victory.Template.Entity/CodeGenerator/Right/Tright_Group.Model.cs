@@ -6,10 +6,11 @@
 
 using FreeSql.DataAnnotations;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-
+using System.Text.Json.Serialization;
 
 namespace Victory.Template.Entity.CodeGenerator
 {
@@ -41,6 +42,14 @@ namespace Victory.Template.Entity.CodeGenerator
         ///描述：状态{0：正常，1：禁用}
         ///</summary>
         public int Status { get; set; }
+
+
+        [Navigate(nameof(Parent_Id))]
+        [JsonIgnore]
+        public Tright_Power Parent { get; set; }
+
+        [Navigate(nameof(Parent_Id))]
+        public List<Tright_Group> Childs { get; set; }
 
     }
  }

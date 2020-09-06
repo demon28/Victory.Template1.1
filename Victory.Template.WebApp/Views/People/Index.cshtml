@@ -94,7 +94,7 @@
                                 <th>性别</th>
                                 <th>状态</th>
                                 <th>入职时间</th>
-
+                                <th>允许登录</th>
                                 <th>操作</th>
                             </tr>
                             <tr v-for="(item,index) in list">
@@ -113,7 +113,6 @@
                                 <td>
                                     <span class="label bg-blue" v-if="item.Sex ==0">男</span>
                                     <span class="label bg-red " v-if="item.Sex ==1">女</span>
-
                                 </td>
 
                                 <td>
@@ -123,6 +122,12 @@
                                 </td>
 
                                 <td>{{item.Comedate}}</td>
+
+
+                                <td>
+                                    <span class="label bg-red" v-if="item.Isadmin ==0">禁止</span>
+                                    <span class="label bg-green " v-if="item.Isadmin ==1">允许</span>
+                                </td>
 
                                 <td>
                                     <button type="button" class="btn bg-purple  btn-xs" v-on:click="Role(item)">分配权限</button>
@@ -246,8 +251,9 @@
 
                         console.log(self);
 
-                        AjaxPost({
+                        MyAjax({
                             url: "/People/List",
+                            type:"post",
                             data: {
                                 pageIndex: index,
                                 pageSize: self.pageModel.pageSize,
@@ -289,7 +295,7 @@
                         var _self = this;
                         if (!item.checked) {
 
-                            AjaxPost({
+                            MyAjax({
                                 url: "/People/AddUserRoleMebmer",
                                 type: "POST",
                                 data: {
@@ -310,7 +316,7 @@
 
                         } else {
 
-                            AjaxPost({
+                            MyAjax({
                                 url: "/People/DeleteUserRoleMebmer",
                                 type: "POST",
                                 data: {
@@ -343,7 +349,7 @@
                     BindRoleList() {
                         var _self = this;
 
-                        AjaxPost({
+                        MyAjax({
                             url: "/People/GetAllRole",
                             type: "POST",
                             data: {
@@ -409,8 +415,6 @@
 
                     },
                     DownTemp() {
-
-
 
                     },
                     Import() {

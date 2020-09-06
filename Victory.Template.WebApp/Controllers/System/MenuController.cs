@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Victory.Core.Controller;
 using Victory.Core.Models;
@@ -11,6 +12,7 @@ using Victory.Template.WebApp.Attribute;
 
 namespace Victory.Template.WebApp.Controllers
 {
+    [Authorize]
     public class MenuController : TopControllerBase
     {
         [Permission(PowerName = "菜单管理")]

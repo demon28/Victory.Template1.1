@@ -1,0 +1,619 @@
+﻿@section Pageheader{
+    <h1>
+        <small> 分组管理 </small>
+
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Group</li>
+    </ol>
+
+}
+
+
+
+@section Htmlhead{
+
+    <!--加载ElementUi组件-->
+
+    <link href="~/lib/element-ui/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/lib/element-ui/index.js"></script>
+    <script src="~/lib/element-ui/locale/zh-CN.js"></script>
+
+    <style>
+
+
+        .tree_menu {
+            position: fixed;
+            display: block;
+            z-index: 20000;
+            background-color: #fff;
+            padding: 5px 0;
+            border: 1px solid #ebeef5;
+            border-radius: 4px;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        }
+
+            .tree_menu ul {
+                margin: 0;
+                padding: 0;
+            }
+
+                .tree_menu ul li {
+                    list-style: none;
+                    margin: 0;
+                    padding: 0 15px;
+                    font-size: 14px;
+                    line-height: 30px;
+                    cursor: pointer;
+                }
+
+                    .tree_menu ul li:hover {
+                        background-color: #ebeef5
+                    }
+    </style>
+
+
+
+}
+
+
+
+
+
+<section class="content" id="tab">
+
+
+    <div class="row" style="margin-top:10px">
+
+        <!-- /.col -->
+        <div class="col-md-3">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">用户组</h3>
+
+                    <div class="box-tools">
+
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+
+                            <button type="button" class="btn btn-sm pull-right bg-blue" @@click="AddGroup()" id="btn_Search">   <i class="fa fa-align-justify"></i> 创建根组织</button>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+
+                    <el-tree :data="grouplist"
+                             :props="defaultProps"
+                             node-key="id"
+                             default-expand-all
+                             :expand-on-click-node="false"
+                             @@node-click="handleNodeClick"
+                             @@node-contextmenu="rightClick"></el-tree>
+
+                    <div id="perTreeMenu" v-if="tmDisplay" class="tree_menu" :style="{...rightMenu}">
+                        <ul>
+                            <li @@click="MenuAddGroup()">
+                                <i class="el-icon-tickets"></i> 新建
+                            </li>
+                            <li @@click="UpdateGroup()">
+                                <i class="el-icon-edit"></i> 编辑
+                            </li>
+                            <li @@click="DelGroup()">
+                                <i class="el-icon-delete"></i> 删除
+                            </li>
+                        </ul>
+                    </div>
+
+
+                </div>
+                <!-- /.box-body -->
+
+
+                <div class="box-footer no-padding">
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                    </div>
+
+
+
+                    <!-- /.pull-right -->
+                </div>
+            </div>
+        </div>
+
+
+        
+
+        <!-- /.col -->
+        <div class="col-md-9">
+            <div class="box box-success">
+                <div class="box-header">
+                    <h3 class="box-title">{{checkGroup.Group_Name}}</h3>
+
+                    <div class="box-tools">
+                      
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-sm pull-right bg-red" @@click="BatchDeletePeople()">  <i class="fa fa-trash-o"></i> 批量移除</button>
+                        </div>
+
+
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-sm pull-right bg-blue" @@click="ShowAddPeople()">  <i class="fa fa-upload"></i> 添加组员</button>
+                        </div>
+
+                        <div class="input-group input-group-sm  col-md-2 pull-right ml-1" style="margin-left: 10px; width: 180px;">
+                            <input type="text" name="table_search" class="form-control pull-right" placeholder="搜索" id="txt_Search" v-model="keywork" />
+
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default " @@click="Query()" id="btn_Search"><i class="fa fa-search"></i></button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover" v-if="fileViewModel" id="tab_file">
+                        <tbody>
+                            <tr>
+                                <th><input type="checkbox" id="chk_all" @@click="OnAllCheck()" style="width:20px;height:20px" /></th>
+                                <th>姓名</th>
+                                <th>工号</th>
+                                <th>部门</th>
+                                <th>归属组</th>
+                                <th>操作</th>
+                            </tr>
+                            <tr v-for="(item,index) in documentList">
+
+                                <td><input type="checkbox" name="chk_file" :id="item.Id" @@click="OnFileCheck()" style="width:20px;height:20px" /></td>
+                                <td>{{item.File_Decode_Name}}</td>
+                                <td>{{item.Upload_UserName}}</td>
+                                <td>{{item.Create_Time}}</td>
+                                <td>{{item.Upload_Groupectory==null?"根目录":item.Upload_Groupectory}}</td>
+                                <td>
+                                    
+                                    <button type="button" class="btn bg-red  btn-xs" v-on:click="DelPeople(item)">移除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+
+                </div>
+                <!-- /.box-body -->
+
+
+                <div class="box-footer no-padding">
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                    </div>
+
+                    <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
+                        <zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
+                                  v-bind:max-page="pageModel.ToTalPage" v-on:pagehandler="InitPeople">
+                        </zpagenav>
+                    </div>
+
+
+                    <!-- /.pull-right -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+</section>
+
+
+
+@section scripts{
+
+    <script>
+
+        var self;
+
+        var vm = new Vue({
+            el: "#tab",
+            data: {
+                grouplist: [],
+                documentList: [],
+            
+                keywork: "",
+
+                checkGroup: {},   //当前选中的文件夹节点
+                tmDisplay: false,   //是否显示右键菜单
+                defaultProps: {
+                    children: 'Childs',
+                    label: 'Group_Name'
+                },
+                pageModel: {
+                    pageIndex: 1,
+                    pageSize: 20,
+                    TotalCount: 0,
+                    ToTalPage: 0,
+                },
+
+            },
+            created: function () {
+                self = this;
+                self.InitGroup();
+
+            },
+            mounted() {
+                this.EnterKeyup();
+            },
+            methods: {
+                Query() {
+                    self.InitPeople(1);
+                },
+                InitGroup() {
+
+                    MyAjax({
+                        url: "/Group/ListGroupByTree",
+                        data: {
+
+                        }, type:"POST",
+                        success: function (result) {
+
+                            console.log(result);
+
+                            if (!result.Success) {
+                                alert_info(result.Message);
+                                return;
+                            }
+
+                            self.grouplist = result.Content;
+
+                            //加载组员
+                             self.InitPeople(1);
+
+                        }
+                    })
+                },
+                AddGroup(pid) {
+                    //添加文件夹
+
+                    bootbox.prompt({
+                        size: "small",
+                        title: "请输入文件夹名称:",
+                        centerVertical: true,
+                        callback: function (res) {
+
+                            if (res == null) {
+                                return;
+                            }
+
+                            var model = {};
+                            model.group_name = res;
+                            model.ParentId = pid;
+
+                            MyAjax({
+                                url: "/DocumentUpload/AddGroup",
+                                data: model,
+                                success: function (result) {
+
+                                    console.log(result);
+
+                                    if (!result.Success) {
+                                        alert_danger(result.Message);
+                                        return;
+                                    }
+                                    self.InitGroup();
+
+                                }
+
+
+                            });
+
+                        }
+
+
+                    })
+
+                },
+                DelGroup() {
+
+
+                    bootbox.confirm({
+                        size: "small",
+                        message: "您确定删除改文件夹吗?",
+                        centerVertical: true,
+                        callback: function (res) {
+
+                            if (!res) {
+                                return;
+                            }
+
+                            //删除文件夹
+                            var groupId = self.checkGroup.Id;
+
+                            MyAjax({
+                                url: "/DocumentUpload/DelGroup",
+                                data: { id: groupId },
+                                success: function (result) {
+
+                                    console.log(result);
+
+                                    if (!result.Success) {
+                                        alert_danger(result.Message);
+                                        return;
+                                    }
+                                    self.InitGroup();
+
+                                }
+                            });
+
+                        }
+
+                    });
+
+                },
+                UpdateGroup() {
+                    //修改文件夹
+
+
+                    bootbox.prompt({
+                        size: "small",
+                        title: "请输入文件夹名称:",
+                        value: self.checkGroup.Group_Name,
+                        callback: function (res) {
+
+
+                            if (res == null) {
+                                return;
+                            }
+
+                            var model = self.checkGroup;
+                            model.Group_Name = res;
+
+                            MyAjax({
+                                url: "/DocumentUpload/UpdateGroup",
+                                data: model,
+                                type:"POST",
+                                success: function (result) {
+
+                                    console.log(result);
+
+                                    if (!result.Success) {
+                                        alert_danger(result.Message);
+                                        return;
+                                    }
+                                    self.InitGroup();
+
+                                }
+                            });
+
+                        }
+                    });
+
+
+
+                },
+                Search() {
+                    this.Query();
+                },
+                EnterKeyup() {
+
+                    document.onkeypress = function (e) {
+                        var keycode = document.all ? event.keyCode : e.which;
+
+                        if (keycode == 13) {
+                            self.Query();
+                            return false;
+                        }
+                    };
+                },
+                MenuAddGroup() {
+                    this.AddGroup(self.checkGroup.Id);
+                },
+                handleNodeClick(data) {
+                    console.log(data);
+                    self.checkGroup = data;
+                    self.InitPeople(1);
+                },
+                rightClick(e, data, node, comp) {
+                    //设置右键菜单
+
+                    // console.log('e:', e, 'data', data, "node", node);
+
+                    self.checkGroup = data;
+
+                    this.rightMenu = { top: e.pageY + 'px', left: e.pageX + 'px' }
+                    this.tmDisplay = true
+
+
+                    document.onclick = function (ev) {
+                        if (ev.target !== document.getElementById('perTreeMenu')) {
+                            self.tmDisplay = false
+                        }
+                    }
+                },
+                InitPeople(index) {
+
+                    //默认加载第一个文件夹
+
+                    if (Object.keys(self.checkGroup).length <= 0) {
+                        self.checkGroup = self.grouplist[0];
+                    }
+
+                    MyAjax({
+                        url: "/Group/ListPeople",
+                        data: {
+                            groupid: self.checkGroup.Id,
+                            keyword: self.keywork,
+                            pageIndex: index,
+                            pageSize: self.pageModel.pageSize,
+                        }, type: "POST",
+                        success: function (result) {
+
+                            console.log(result);
+
+                            if (!result.Success) {
+                                alert_danger(result.Message);
+                                return;
+                            }
+                            self.documentList = result.Content;
+
+                            self.pageModel.pageIndex = result.PageIndex;
+                            self.pageModel.pageSize = result.PageSize;
+                            self.pageModel.TotalCount = result.TotalCount;
+                            self.pageModel.ToTalPage = result.ToTalPage;
+
+                        }
+                    });
+
+                },
+                ShowAddPeople() {
+                    $('#modal-default').modal('show');
+                    $(".el-upload__input").css("display", "none");
+                },
+                DelPeople(item) {
+
+                    bootbox.confirm({
+                        size: "small",
+                        message: "您确定删除改文件吗?",
+                        centerVertical: true,
+                        callback: function (res) {
+
+                            if (!res) {
+                                return;
+                            }
+
+                            MyAjax({
+                                url: "/DocumentUpload/DelFile",
+                                data: {
+                                    id: item.Id,
+
+                                }, type: "POST",
+                                success: function (result) {
+
+                                    console.log(result);
+
+                                    if (!result.Success) {
+                                        alert_danger(result.Message);
+                                        return;
+                                    }
+
+                                    alert_success(result.Message);
+                                    self.InitPeople(self.pageModel.pageIndex);
+
+                                    // 删除之后 调用一次 清理 选中集合 ，以免文件已不存在，导致批量删除 或 批量下载失败
+                                    self.OnClearCheck();
+                                }
+                            });
+                        }
+                    });
+
+                },
+                OnAllCheck() {
+
+                    if ($("#chk_all")[0].checked) {
+                        var files = $("#tab_file td :checkbox");
+                        files.prop("checked", true);
+
+                        $.each(files, function (index, value) {
+
+                            let model = {};
+                            model.id = files[index].id
+
+                            self.checkList.push(model);
+
+                        });
+
+
+                    } else {
+                        $("#tab_file td :checkbox").prop("checked", false);
+
+                        self.checkList = [];
+                    }
+
+                },
+                OnClearCheck() {
+                    var files = $("#tab_file td :checkbox"); //列表模式下，从tab中获取
+                    if (!self.fileViewModel) {
+
+                        files = $("#grid_file div :checkbox");  //网格模式下，从gird中获取
+                    }
+
+                    self.checkList = [];
+                    $.each(files, function (index, value) {
+                        files[index].checked = false;
+
+                    });
+
+                },
+                BatchDeletePeople() {
+
+                    console.log("选中的集合", self.checkList);
+
+                    if (self.checkList.length <= 0) {
+
+                        alert_danger("请勾选您要删除的文件！");
+                        return;
+                    }
+
+
+                    bootbox.confirm({
+                        size: "small",
+                        message: "您确定删除改文件吗?",
+                        centerVertical: true,
+                        callback: function (res) {
+
+                            if (!res) {
+                                return;
+                            }
+
+                            var array = [];
+                            for (var item of self.checkList) {
+                                array.push(parseInt(item.id));
+                            }
+
+                            console.log("=====", array);
+
+                            $.ajax({
+                                url: "/DocumentUpload/BatchDelFile",
+                                data: { "ids": array },
+                                type: "post",
+                                success: function (result) {
+
+                                    console.log(result);
+
+                                    if (!result.Success) {
+                                        alert_danger(result.Message);
+                                        return;
+                                    }
+                                    alert_success(result.Message);
+                                    self.InitPeople(self.pageModel.pageIndex);
+
+
+                                    // 删除之后 调用一次 清理 选中集合 ，以免文件已不存在，导致批量删除 或 批量下载失败
+                                    self.OnClearCheck();
+
+                                }
+
+                            });
+
+                        }
+                    });
+
+                },
+            }
+        });
+
+
+
+
+    </script>
+
+}
