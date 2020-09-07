@@ -54,7 +54,7 @@ namespace Victory.Template.WebApp.Controllers.System
 
         [Permission(PowerName = "添加")]
         [HttpPost]
-        public IActionResult Add(Tright_Group model)
+        public IActionResult AddGroup(Tright_Group model)
         {
 
             Tright_Group_Da da = new Tright_Group_Da();
@@ -66,7 +66,7 @@ namespace Victory.Template.WebApp.Controllers.System
 
         [Permission(PowerName = "修改")]
         [HttpPost]
-        public IActionResult Update(Tright_Group model)
+        public IActionResult UpdateGroup(Tright_Group model)
         {
             Tright_Group_Da da = new Tright_Group_Da();
             da.Update(model);
@@ -76,7 +76,7 @@ namespace Victory.Template.WebApp.Controllers.System
 
         [Permission(PowerName = "删除")]
         [HttpPost]
-        public IActionResult Del(int id)
+        public IActionResult DelGroup(int id)
         {
             Tright_Group_Da da = new Tright_Group_Da();
 
@@ -89,6 +89,21 @@ namespace Victory.Template.WebApp.Controllers.System
         }
 
 
+        [Permission(PowerName = "查询组员")]
+        [HttpPost]
+        public IActionResult ListPeople(int groupid, string keyword, int pageIndex, int pageSize) {
+
+            PageModel page = new PageModel();
+            page.PageIndex = pageIndex;
+            page.PageSize = pageSize;
+
+            Tright_Group_Da da = new Tright_Group_Da();
+            var list=  da.ListPeopleByGroup(groupid, keyword,ref page);
+
+            return SuccessResult(list);
+
+
+        }
 
 
 

@@ -24,7 +24,7 @@ namespace Victory.Template.DataAccess.CodeGenerator
 
         public Tright_Group_Da() : base(Victory.Template.DataAccess.DbContext.Db, null, null)
         {
-           
+
         }
 
 
@@ -39,17 +39,18 @@ namespace Victory.Template.DataAccess.CodeGenerator
 
 
 
-        public List<Tright_Group> ListByWhere(string keyword, ref PageModel page) {
+        public List<Tright_Group> ListByWhere(string keyword, ref PageModel page)
+        {
 
-            var data =this.Select;
+            var data = this.Select;
 
-            if(!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(keyword))
             {
-               data= data.Where(s => s.Group_Name.Contains(keyword)  );
+                data = data.Where(s => s.Group_Name.Contains(keyword));
             }
 
             page.TotalCount = data.Count().ToInt();
-          
+
             var list = data.Page(page.PageIndex, page.PageSize)
                 .OrderBy(s => s.Id)
                 .ToList();
@@ -57,7 +58,33 @@ namespace Victory.Template.DataAccess.CodeGenerator
             return list;
         }
 
+        /// <summary>
+        /// 根据用户组id查询 用户信息
+        /// </summary>
+        /// <param name="gid"></param>
+        /// <returns></returns>
 
+        public List<RightUserGroupModel> ListPeopleByGroup(int gid, string keyword, ref PageModel page)
+        {
+            var data = this.Orm.Select<Tright_User_Group, Tsys_User, Tright_Group>()
+                  .LeftJoin((a, b, c) => a.User_Id == b.Id)
+                  .LeftJoin((a, b, c) => a.Group_Id == c.Id)
+                  .Where((a, b, c) => a.Group_Id == gid);
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                data = data.Where((a, b, c) => b.Name.Contains(keyword) || b.Workid.Contains(keyword));
+            }
+
+            page.TotalCount = data.Count().ToInt();
+
+            var list = data.Page(page.PageIndex, page.PageSize)
+              .OrderBy((a, b, c) => b.Id)
+              .ToList((a, b, c)=>new RightUserGroupModel()  );
+
+            return list;
+
+        }
 
     }
 

@@ -124,7 +124,7 @@
         </div>
 
 
-        
+
 
         <!-- /.col -->
         <div class="col-md-9">
@@ -133,7 +133,7 @@
                     <h3 class="box-title">{{checkGroup.Group_Name}}</h3>
 
                     <div class="box-tools">
-                      
+
                         <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
                             <button type="button" class="btn btn-sm pull-right bg-red" @@click="BatchDeletePeople()">  <i class="fa fa-trash-o"></i> 批量移除</button>
                         </div>
@@ -157,7 +157,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover" v-if="fileViewModel" id="tab_file">
+                    <table class="table table-hover"  id="tab_file">
                         <tbody>
                             <tr>
                                 <th><input type="checkbox" id="chk_all" @@click="OnAllCheck()" style="width:20px;height:20px" /></th>
@@ -170,12 +170,12 @@
                             <tr v-for="(item,index) in documentList">
 
                                 <td><input type="checkbox" name="chk_file" :id="item.Id" @@click="OnFileCheck()" style="width:20px;height:20px" /></td>
-                                <td>{{item.File_Decode_Name}}</td>
-                                <td>{{item.Upload_UserName}}</td>
-                                <td>{{item.Create_Time}}</td>
-                                <td>{{item.Upload_Groupectory==null?"根目录":item.Upload_Groupectory}}</td>
+                                <td>{{item.Name}}</td>
+                                <td>{{item.Workid}}</td>
+                                <td>{{item.Dep1+'>'+item.Dep2+'>'+item.Dep3+'>'+item.Dep4+'>'+item.Dep5}}</td>
+                                <td>{{item.Group_Name}}</td>
                                 <td>
-                                    
+
                                     <button type="button" class="btn bg-red  btn-xs" v-on:click="DelPeople(item)">移除</button>
                                 </td>
                             </tr>
@@ -209,7 +209,29 @@
     </div>
 
 
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="txt_username"></h4>
+                </div>
+                <div class="modal-body">
 
+                    <div class="box-body table-responsive no-padding">
+                
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
 
 
 
@@ -284,6 +306,8 @@
                 AddGroup(pid) {
                     //添加文件夹
 
+                    console.log("====父级ID",pid);
+
                     bootbox.prompt({
                         size: "small",
                         title: "请输入文件夹名称:",
@@ -295,12 +319,13 @@
                             }
 
                             var model = {};
-                            model.group_name = res;
-                            model.ParentId = pid;
+                            model.Group_Name = res;
+                            model.Parent_Id = pid;
 
                             MyAjax({
-                                url: "/DocumentUpload/AddGroup",
+                                url: "/Group/AddGroup",
                                 data: model,
+                                type:"POST",
                                 success: function (result) {
 
                                     console.log(result);
@@ -339,8 +364,9 @@
                             var groupId = self.checkGroup.Id;
 
                             MyAjax({
-                                url: "/DocumentUpload/DelGroup",
+                                url: "/Group/DelGroup",
                                 data: { id: groupId },
+                                type: "POST",
                                 success: function (result) {
 
                                     console.log(result);
@@ -378,7 +404,7 @@
                             model.Group_Name = res;
 
                             MyAjax({
-                                url: "/DocumentUpload/UpdateGroup",
+                                url: "/Group/UpdateGroup",
                                 data: model,
                                 type:"POST",
                                 success: function (result) {
@@ -491,7 +517,7 @@
                             }
 
                             MyAjax({
-                                url: "/DocumentUpload/DelFile",
+                                url: "/Group/DelFile",
                                 data: {
                                     id: item.Id,
 
@@ -582,7 +608,7 @@
                             console.log("=====", array);
 
                             $.ajax({
-                                url: "/DocumentUpload/BatchDelFile",
+                                url: "/Group/BatchDelFile",
                                 data: { "ids": array },
                                 type: "post",
                                 success: function (result) {
