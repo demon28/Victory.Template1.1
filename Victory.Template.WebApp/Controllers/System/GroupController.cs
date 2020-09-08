@@ -39,8 +39,6 @@ namespace Victory.Template.WebApp.Controllers.System
         }
 
 
-
-
         [Permission(PowerName = "查询")]
         [HttpPost]
         public IActionResult ListGroupByTree()
@@ -102,9 +100,52 @@ namespace Victory.Template.WebApp.Controllers.System
 
             return SuccessResult(list);
 
-
         }
 
+        /// <summary>
+        /// 关键字查询人员添加用户组
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult QueryPeople(string keyword) {
+
+            Tsys_User_Da da = new Tsys_User_Da();
+            var list = da.ListByWhere(keyword);
+            return SuccessResult(list);
+        }
+
+
+        /// <summary>
+        /// 添加用户到用户组
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="groupid"></param>
+        /// <returns></returns>
+        public IActionResult AddPeopleToGroup(List<Tright_User_Group> list) {
+
+            Tright_User_Group_Da da = new Tright_User_Group_Da();
+
+            //List<Tright_User_Group> items = new List<Tright_User_Group>();
+
+            //foreach (var item in list)
+            //{
+            //    Tright_User_Group model = new Tright_User_Group
+            //    {
+            //        User_Id = item,
+            //        Group_Id = groupid
+            //    };
+            //    items.Add(model);
+            //}
+
+            if (!da.BatchInsert(list))
+            {
+                return FailMessage("添加失败！");
+            }
+
+            return SuccessMessage("添加成功！");
+
+        }
 
 
     }

@@ -144,7 +144,7 @@
                         </div>
 
                         <div class="input-group input-group-sm  col-md-2 pull-right ml-1" style="margin-left: 10px; width: 180px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="搜索" id="txt_Search" v-model="keywork" />
+                            <input type="text" name="table_search" class="form-control pull-right" placeholder="搜索" id="txt_Search" v-model="keywords" v-on:keyup.13="Query" />
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default " @@click="Query()" id="btn_Search"><i class="fa fa-search"></i></button>
@@ -157,7 +157,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover"  id="tab_file">
+                    <table class="table table-hover" id="tab_file">
                         <tbody>
                             <tr>
                                 <th><input type="checkbox" id="chk_all" @@click="OnAllCheck()" style="width:20px;height:20px" /></th>
@@ -167,7 +167,7 @@
                                 <th>归属组</th>
                                 <th>操作</th>
                             </tr>
-                            <tr v-for="(item,index) in documentList">
+                            <tr v-for="(item,index) in peoplelist">
 
                                 <td><input type="checkbox" name="chk_file" :id="item.Id" @@click="OnFileCheck()" style="width:20px;height:20px" /></td>
                                 <td>{{item.Name}}</td>
@@ -216,17 +216,48 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="txt_username"></h4>
+                    <h4 class="modal-title" id="txt_username">{{checkGroup.Group_Name}}</h4>
                 </div>
                 <div class="modal-body">
 
-                    <div class="box-body table-responsive no-padding">
-                
+                    <div class="box-body table-responsive no-padding ">
+
+                        <div class="input-group input-group-sm   col-md-12" style=" padding: 15px">
+                            <input type="text" class="form-control" placeholder="姓名、部门、工号. 回车键开始检索" v-model="queryKeys" v-on:keyup.13="QueryPeople" />
+
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default " @@click="QueryPeople()"><i class="fa fa-search"></i></button>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group col-md-5">
+
+                            <select multiple="" class="form-control col-11" style="height:250px;margin-top:10px;margin-left:1px;">
+                                <option :value="item.Id" v-for="item in queryArray" v-on:dblclick="PeopleMoveRight(item)">{{item.Name}}[{{item.Workid}}]</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-2" style="margin-top:30px">
+                            <input type="button" value=">>" class="form-control" @@click="PeopleAllRight" />
+                            <br />
+                            <input type="button" value="<<" class="form-control" @@click="PeopleAllLeft" />
+                        </div>
+
+                        <div class="form-group col-md-5">
+
+                            <select multiple="" class="form-control col-11" style="height:250px;margin-top:10px;margin-right:1px;">
+                                <option :value="item.Id" v-for="item in checkArray" v-on:dblclick="PeopleMoveLeft(item)">{{item.Name}}[{{item.Workid}}]</option>
+                            </select>
+                        </div>
+
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary pull-right" data-dismiss="modal" @@click="AddPeopleToGroup">添加</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -249,10 +280,9 @@
             el: "#tab",
             data: {
                 grouplist: [],
-                documentList: [],
-            
-                keywork: "",
+                peoplelist: [],
 
+                keywords: "",
                 checkGroup: {},   //当前选中的文件夹节点
                 tmDisplay: false,   //是否显示右键菜单
                 defaultProps: {
@@ -265,6 +295,9 @@
                     TotalCount: 0,
                     ToTalPage: 0,
                 },
+                queryKeys: "",
+                queryArray: [],
+                checkArray: []
 
             },
             created: function () {
@@ -273,7 +306,7 @@
 
             },
             mounted() {
-                this.EnterKeyup();
+
             },
             methods: {
                 Query() {
@@ -285,7 +318,7 @@
                         url: "/Group/ListGroupByTree",
                         data: {
 
-                        }, type:"POST",
+                        }, type: "POST",
                         success: function (result) {
 
                             console.log(result);
@@ -298,7 +331,7 @@
                             self.grouplist = result.Content;
 
                             //加载组员
-                             self.InitPeople(1);
+                            self.InitPeople(1);
 
                         }
                     })
@@ -306,7 +339,7 @@
                 AddGroup(pid) {
                     //添加文件夹
 
-                    console.log("====父级ID",pid);
+                    console.log("====父级ID", pid);
 
                     bootbox.prompt({
                         size: "small",
@@ -325,7 +358,7 @@
                             MyAjax({
                                 url: "/Group/AddGroup",
                                 data: model,
-                                type:"POST",
+                                type: "POST",
                                 success: function (result) {
 
                                     console.log(result);
@@ -406,7 +439,7 @@
                             MyAjax({
                                 url: "/Group/UpdateGroup",
                                 data: model,
-                                type:"POST",
+                                type: "POST",
                                 success: function (result) {
 
                                     console.log(result);
@@ -423,22 +456,9 @@
                         }
                     });
 
-
-
                 },
                 Search() {
                     this.Query();
-                },
-                EnterKeyup() {
-
-                    document.onkeypress = function (e) {
-                        var keycode = document.all ? event.keyCode : e.which;
-
-                        if (keycode == 13) {
-                            self.Query();
-                            return false;
-                        }
-                    };
                 },
                 MenuAddGroup() {
                     this.AddGroup(self.checkGroup.Id);
@@ -450,11 +470,9 @@
                 },
                 rightClick(e, data, node, comp) {
                     //设置右键菜单
-
                     // console.log('e:', e, 'data', data, "node", node);
 
                     self.checkGroup = data;
-
                     this.rightMenu = { top: e.pageY + 'px', left: e.pageX + 'px' }
                     this.tmDisplay = true
 
@@ -477,7 +495,7 @@
                         url: "/Group/ListPeople",
                         data: {
                             groupid: self.checkGroup.Id,
-                            keyword: self.keywork,
+                            keyword: self.keywords,
                             pageIndex: index,
                             pageSize: self.pageModel.pageSize,
                         }, type: "POST",
@@ -489,7 +507,7 @@
                                 alert_danger(result.Message);
                                 return;
                             }
-                            self.documentList = result.Content;
+                            self.peoplelist = result.Content;
 
                             self.pageModel.pageIndex = result.PageIndex;
                             self.pageModel.pageSize = result.PageSize;
@@ -502,7 +520,6 @@
                 },
                 ShowAddPeople() {
                     $('#modal-default').modal('show');
-                    $(".el-upload__input").css("display", "none");
                 },
                 DelPeople(item) {
 
@@ -607,7 +624,7 @@
 
                             console.log("=====", array);
 
-                            $.ajax({
+                            MyAjax({
                                 url: "/Group/BatchDelFile",
                                 data: { "ids": array },
                                 type: "post",
@@ -634,6 +651,100 @@
                     });
 
                 },
+                QueryPeople() {
+                    //检索用户成为组员
+
+                    MyAjax({
+                        url: "/Group/QueryPeople",
+                        data: { keyword: self.queryKeys },
+                        type: "post",
+                        showloading: false,
+                        success: function (result) {
+
+                            console.log(result);
+
+                            if (!result.Success) {
+                                alert_danger(result.Message);
+                                return;
+                            }
+                            self.queryArray = result.Content;
+                        }
+
+                    });
+                },
+                PeopleMoveRight(item) {
+
+                    for (var i = 0; i < self.checkArray.length; i++) {
+                        if (self.checkArray[i].Workid == item.Workid) {
+                            return;
+                        }
+                    }
+
+                    self.checkArray.push(item);
+                },
+                PeopleMoveLeft(item) {
+
+                    for (var i = 0; i < self.checkArray.length; i++) {
+                        if (self.checkArray[i].Workid == item.Workid) {
+                            self.checkArray.splice(i, 1);
+                        }
+                    }
+                },
+                PeopleAllRight() {
+
+                    for (let item of self.queryArray) {
+
+                        if (!self.HasPeople(item.Workid)) {
+                            self.checkArray.push(item);
+                        }
+
+                    }
+                },
+                HasPeople(Workid) {
+                    for (let chks of self.checkArray) {
+                        if (chks.Workid == Workid) {
+                            return true;
+                        }
+                    }
+                },
+                PeopleAllLeft() {
+                    self.checkArray = [];
+                },
+                AddPeopleToGroup() {
+
+                    let list = [];
+
+                    console.log("选中的用户组===", self.checkGroup);
+
+                    for (var item of self.checkArray) {
+                        let model = {};
+                        model.User_Id = item.Id;
+                        model.Group_Id = self.checkGroup.Id;
+                        list.push(model);
+                    }
+
+                    MyAjax({
+                        url: "/Group/AddPeopleToGroup",
+                        data: {
+                            list: list
+                        },
+                        type: "post",
+                        showloading: false,
+                        success: function (result) {
+
+                            console.log(result);
+
+                            if (!result.Success) {
+                                alert_danger(result.Message);
+                                return;
+                            }
+                            alert_success(result.Message);
+                            self.InitGroup();
+                        }
+
+                    });
+
+                }
             }
         });
 

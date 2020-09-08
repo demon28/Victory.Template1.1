@@ -3,9 +3,6 @@
 //此方法必须放在bootbox.js后引用，因为网络请求，需要转菊花
 function MyAjax(ajaxjson) {
 
-    console.log("======",ajaxjson.showloading)
-
-
     //此处加上 加载提示，避免网速快时显示框框 影响体验感。
 
     var dialog;

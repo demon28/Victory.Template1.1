@@ -37,7 +37,12 @@ namespace Victory.Template.DataAccess.CodeGenerator
             return Select.OrderBy(s => s.Id).ToTreeList();
         }
 
-
+        /// <summary>
+        /// 关键字查询
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
 
         public List<Tright_Group> ListByWhere(string keyword, ref PageModel page)
         {
@@ -78,13 +83,19 @@ namespace Victory.Template.DataAccess.CodeGenerator
 
             page.TotalCount = data.Count().ToInt();
 
-            var list = data.Page(page.PageIndex, page.PageSize)
+            return  data.Page(page.PageIndex, page.PageSize)
               .OrderBy((a, b, c) => b.Id)
-              .ToList((a, b, c)=>new RightUserGroupModel()  );
-
-            return list;
+              .ToList((a, b, c) => new RightUserGroupModel()
+              {
+                  UserGroup_Id = a.Id,
+                  Group_Id = c.Id,
+                  Group_Name = c.Group_Name
+              });
+          
 
         }
+
+
 
     }
 

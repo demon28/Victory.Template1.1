@@ -9,6 +9,16 @@ namespace Victory.Template.Entity.Model
     {
 
         /// <summary>
+        /// 中间表Tright_user_Group 的主键id
+        /// </summary>
+        public int UserGroup_Id { get; set; }
+
+        /// <summary>
+        /// 组id
+        /// </summary>
+        public int Group_Id { get; set; }
+
+        /// <summary>
         /// 用户组，组名
         /// </summary>
         public string Group_Name { get; set; }
