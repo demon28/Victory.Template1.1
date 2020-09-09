@@ -34,8 +34,11 @@ namespace Victory.Template.DataAccess.CodeGenerator
         /// <returns></returns>
         public bool BatchInsert(List<Tright_User_Group> items)
         {
-             return  this.Orm.Insert(items).ExecuteAffrows() > 0;
+            return this.Orm.Insert(items).ExecuteAffrows() > 0;
         }
+
+
+
 
     }
 

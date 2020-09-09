@@ -169,14 +169,14 @@
                             </tr>
                             <tr v-for="(item,index) in peoplelist">
 
-                                <td><input type="checkbox" name="chk_file" :id="item.Id" @@click="OnFileCheck()" style="width:20px;height:20px" /></td>
+                                <td><input type="checkbox" name="chk_file" :id="item.UserGroup_Id" @@click="OnCheck()" style="width:20px;height:20px" /></td>
                                 <td>{{item.Name}}</td>
                                 <td>{{item.Workid}}</td>
                                 <td>{{item.Dep1+'>'+item.Dep2+'>'+item.Dep3+'>'+item.Dep4+'>'+item.Dep5}}</td>
                                 <td>{{item.Group_Name}}</td>
                                 <td>
 
-                                    <button type="button" class="btn bg-red  btn-xs" v-on:click="DelPeople(item)">移除</button>
+                                    <button type="button" class="btn bg-red  btn-xs" v-on:click="DelPeopleToGroup(item)">移除</button>
                                 </td>
                             </tr>
 
@@ -284,6 +284,7 @@
 
                 keywords: "",
                 checkGroup: {},   //当前选中的文件夹节点
+                checkList: [],
                 tmDisplay: false,   //是否显示右键菜单
                 defaultProps: {
                     children: 'Childs',
@@ -344,7 +345,7 @@
                     bootbox.prompt({
                         size: "small",
                         title: "请输入文件夹名称:",
-                        centerVertical: true,
+                  
                         callback: function (res) {
 
                             if (res == null) {
@@ -381,12 +382,9 @@
 
                 },
                 DelGroup() {
-
-
                     bootbox.confirm({
                         size: "small",
                         message: "您确定删除改文件夹吗?",
-                        centerVertical: true,
                         callback: function (res) {
 
                             if (!res) {
@@ -499,6 +497,7 @@
                             pageIndex: index,
                             pageSize: self.pageModel.pageSize,
                         }, type: "POST",
+                        showloading: false,
                         success: function (result) {
 
                             console.log(result);
@@ -521,55 +520,32 @@
                 ShowAddPeople() {
                     $('#modal-default').modal('show');
                 },
-                DelPeople(item) {
+                OnCheck() {
+                    var list = $("#tab_file td :checkbox"); //列表模式下，从tab中获取
+                    console.log(list);
 
-                    bootbox.confirm({
-                        size: "small",
-                        message: "您确定删除改文件吗?",
-                        centerVertical: true,
-                        callback: function (res) {
-
-                            if (!res) {
-                                return;
-                            }
-
-                            MyAjax({
-                                url: "/Group/DelFile",
-                                data: {
-                                    id: item.Id,
-
-                                }, type: "POST",
-                                success: function (result) {
-
-                                    console.log(result);
-
-                                    if (!result.Success) {
-                                        alert_danger(result.Message);
-                                        return;
-                                    }
-
-                                    alert_success(result.Message);
-                                    self.InitPeople(self.pageModel.pageIndex);
-
-                                    // 删除之后 调用一次 清理 选中集合 ，以免文件已不存在，导致批量删除 或 批量下载失败
-                                    self.OnClearCheck();
-                                }
-                            });
+                    self.checkList = [];
+                    $.each(list, function (index, value) {
+                        if (list[index].checked) {
+                            let model = {};
+                            model.id = list[index].id;
+                            self.checkList.push(model);
                         }
                     });
+                    console.log("选中的复选框=====", self.checkList);
+
 
                 },
                 OnAllCheck() {
 
                     if ($("#chk_all")[0].checked) {
-                        var files = $("#tab_file td :checkbox");
-                        files.prop("checked", true);
+                        var list = $("#tab_file td :checkbox");
+                        list.prop("checked", true);
 
-                        $.each(files, function (index, value) {
+                        $.each(list, function (index, value) {
 
                             let model = {};
-                            model.id = files[index].id
-
+                            model.id = list[index].id;
                             self.checkList.push(model);
 
                         });
@@ -583,18 +559,15 @@
 
                 },
                 OnClearCheck() {
-                    var files = $("#tab_file td :checkbox"); //列表模式下，从tab中获取
-                    if (!self.fileViewModel) {
-
-                        files = $("#grid_file div :checkbox");  //网格模式下，从gird中获取
-                    }
+                    var list = $("#tab_file td :checkbox"); 
 
                     self.checkList = [];
-                    $.each(files, function (index, value) {
-                        files[index].checked = false;
-
+                    $.each(list, function (index, value) {
+                        list[index].checked = false;
                     });
 
+                    $("#chk_all")[0].checked = false; 
+                    
                 },
                 BatchDeletePeople() {
 
@@ -610,7 +583,6 @@
                     bootbox.confirm({
                         size: "small",
                         message: "您确定删除改文件吗?",
-                        centerVertical: true,
                         callback: function (res) {
 
                             if (!res) {
@@ -625,8 +597,8 @@
                             console.log("=====", array);
 
                             MyAjax({
-                                url: "/Group/BatchDelFile",
-                                data: { "ids": array },
+                                url: "/Group/BatchDeletePeople",
+                                data: { ids: array },
                                 type: "post",
                                 success: function (result) {
 
@@ -726,7 +698,8 @@
                     MyAjax({
                         url: "/Group/AddPeopleToGroup",
                         data: {
-                            list: list
+                            list: list,
+                            groupid: self.checkGroup.Id
                         },
                         type: "post",
                         showloading: false,
@@ -739,10 +712,49 @@
                                 return;
                             }
                             alert_success(result.Message);
-                            self.InitGroup();
+                            self.InitPeople(1);
                         }
 
                     });
+
+                },
+                DelPeopleToGroup(item) {
+
+                    bootbox.confirm({
+                        size: "small",
+                        message: "您确定删除改文件吗?",
+                        callback: function (res) {
+
+                            if (!res) {
+                                return;
+                            }
+
+                            MyAjax({
+                                url: "/Group/DelPeopleToGroup",
+                                data: {
+                                    tugid: item.UserGroup_Id
+                                },
+                                type: "post",
+                                showloading: false,
+                                success: function (result) {
+
+                                    console.log(result);
+
+                                    if (!result.Success) {
+                                        alert_danger(result.Message);
+                                        return;
+                                    }
+
+                                    alert_success(result.Message);
+                                    self.InitPeople(self.pageModel.pageIndex);
+
+                                    // 删除之后 调用一次 清理 选中集合 
+                                    self.OnClearCheck();
+                                }
+                            });
+                        }
+                    });
+
 
                 }
             }
