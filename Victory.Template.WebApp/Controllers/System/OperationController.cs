@@ -12,44 +12,21 @@ using Victory.Template.WebApp.Attribute;
 namespace Victory.Template.WebApp.Controllers
 {
     [Authorize]
-    public class UserRightController : TopControllerBase
+    public class OperationController : TopControllerBase
     {
 
-        [Permission(PowerName = "用户角色")]
+        [Permission(PowerName = "功能管理")]
         public IActionResult Index()
         {
             return View();
         }
 
-
-        [Permission(Ignore = true)]
-        public IActionResult NoPermission() {
-
-            return View();
-
-        }
-
-      
-
-        [Permission(PowerName = "功能配置")]
-        public IActionResult Func()
-        {
-            return View();
-        }
-
-      
-
-
-
-
         [Permission(PowerName = "查询功能")]
         [HttpPost]
         public IActionResult ListFunc()
         {
-            DataAccess.CodeGenerator.Tright_Power_Da da = new DataAccess.CodeGenerator.Tright_Power_Da();
-
-            return SuccessResultList(da.ListByOder());
-
+            Tright_Operation_Da da = new Tright_Operation_Da();
+            return SuccessResultList(da.Select.ToTreeList());
         }
 
 

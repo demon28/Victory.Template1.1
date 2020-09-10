@@ -63,13 +63,13 @@
                                         <i v-if="item.ChildsShow" @@click="ChildsShow(item,false)" class="fa  fa-minus-square-o"></i>
 
 
-                                        {{item.Powername}}
+                                        {{item.Name}}
                                     </td>
                                     <td>
-                                        {{item.Pageurl}}
+                                        {{item.Url}}
                                     </td>
-                                    <td>{{item.Parentid}}</td>
-                                    <td>{{SetType(item.Powertype)}}</td>
+                                    <td>{{item.Parent_Id}}</td>
+                                    <td>{{SetType(item.Type)}}</td>
 
                                     <td>{{item.Area}}</td>
                                     <td>{{item.Controller}}</td>
@@ -95,15 +95,15 @@
                                     <td>
 
 
-                                        <span v-if="child.Powertype==2" style="margin-left:30px">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
+                                        <span v-if="child.Type==0" style="margin-left:30px">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
 
-                                        {{child.Powername}}
+                                        {{child.Name}}
                                     </td>
                                     <td>
-                                        {{child.Pageurl}}
+                                        {{child.Url}}
                                     </td>
-                                    <td>{{child.Parentid}}</td>
-                                    <td>{{SetType(child.Powertype)}}</td>
+                                    <td>{{child.Parent_Id}}</td>
+                                    <td>{{SetType(child.Type)}}</td>
 
                                     <td>{{child.Area}}</td>
                                     <td>{{child.Controller}}</td>
@@ -172,7 +172,7 @@
                             <label for="txt_projectname" class="col-sm-3 control-label">权限名称：</label>
 
                             <div class="col-sm-7">
-                                <input type="text" class="form-control" v-model="poweritem.Powername">
+                                <input type="text" class="form-control" v-model="poweritem.Name">
                             </div>
                         </div>
 
@@ -184,10 +184,10 @@
 
                             <div class="col-sm-7">
 
-                                <select class="form-control" v-model="poweritem.Powertype">
+                                <select class="form-control" v-model="poweritem.Type">
 
                                     <option value="1">页面访问</option>
-                                    <option value="2">功能操作</option>
+                                    <option value="0">功能操作</option>
                                 </select>
 
                             </div>
@@ -200,7 +200,7 @@
                             <label for="txt_kehuname" class="col-sm-3 control-label">路由：</label>
 
                             <div class="col-sm-7">
-                                <input type="text" class="form-control" v-model="poweritem.Pageurl">
+                                <input type="text" class="form-control" v-model="poweritem.Url">
                             </div>
                         </div>
 
@@ -208,7 +208,7 @@
                             <label for="txt_kehuname" class="col-sm-3 control-label">归属ID：</label>
 
                             <div class="col-sm-7">
-                                <input type="text" class="form-control" v-model="poweritem.Parentid">
+                                <input type="text" class="form-control" v-model="poweritem.Parent_Id">
                             </div>
                         </div>
 
@@ -308,8 +308,8 @@
                Init() {
                    var self = this;
 
-                   AjaxPost({
-                       url: "/UserRight/ListFunc",
+                   MyAjax({
+                       url: "/Operation/ListFunc",
                        type: "POST",
                        data: {
 
@@ -342,8 +342,8 @@
                    bootbox.confirm("您确定删除改记录吗？", function (res) {
                        if (res) {
 
-                           AjaxPost({
-                               url: "/UserRight/DelFunc",
+                           MyAjax({
+                               url: "/Operation/DelFunc",
                                type: "POST",
                                data: {
                                    id: item.Id
@@ -370,8 +370,8 @@
                    var _self = this;
 
 
-                   AjaxPost({
-                       url: "/UserRight/AddFunc",
+                   MyAjax({
+                       url: "/Operation/AddFunc",
                        type: "POST",
                        data: _self.poweritem,
                        success: function (result) {
@@ -391,8 +391,8 @@
                },
                Update: function () {
                    var _self = this;
-                   AjaxPost({
-                       url: "/UserRight/UpdateFunc",
+                   MyAjax({
+                       url: "/Operation/UpdateFunc",
                        type: "POST",
                        data: _self.poweritem,
                        success: function (result) {

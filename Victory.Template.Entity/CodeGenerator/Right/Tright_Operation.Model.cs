@@ -5,7 +5,9 @@
 //---------------
 
 using FreeSql.DataAnnotations;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -71,7 +73,15 @@ namespace Victory.Template.Entity.CodeGenerator
         /// 名称
         /// </summary>
         public string Name { get; set; }
-        
+
+
+        [Navigate(nameof(Parent_Id))]
+        [JsonIgnore]
+        public Tright_Operation Parent { get; set; }
+
+        [Navigate(nameof(Parent_Id))]
+        public List<Tright_Operation> Childs { get; set; }
+
     }
  }
 

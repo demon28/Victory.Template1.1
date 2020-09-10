@@ -25,7 +25,8 @@ namespace Victory.Template.DataAccess.CodeGenerator
 
         }
 
-        public List<Tright_Operation> ListByUserId(int userid) {
+        public List<Tright_Operation> ListByUserId(int userid)
+        {
 
             string sql = @" SELECT DISTINCT
   [to].Id,
@@ -47,13 +48,9 @@ namespace Victory.Template.DataAccess.CodeGenerator
  WHERE tp.Id=2 AND [to].Status=0 AND vur.Userid=@userid
 ";
 
-          return  this.Select.WithSql(sql, new { userid = userid }).OrderBy(s=>s.Sortid).ToList();
-
-            
-
+            return this.Select.WithSql(sql, new { userid = userid }).OrderBy(s => s.Sortid).ToList();
         }
 
     }
-
 }
 

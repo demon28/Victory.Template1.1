@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +63,9 @@ namespace Victory.Template.WebApp.Controllers
         {
             Tright_Menu_Da da = new Tright_Menu_Da();
 
-            if (da.Delete(s => s.Id == id) > 0)
+            int count= da.Select.Where(s => s.Id == id).AsTreeCte().ToDelete().ExecuteAffrows();
+
+            if (count > 0)
             {
                 return SuccessMessage("已删除！");
 

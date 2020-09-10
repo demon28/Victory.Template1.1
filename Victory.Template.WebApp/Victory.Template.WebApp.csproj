@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\Right\**" />
+    <Content Remove="Controllers\Right\**" />
+    <EmbeddedResource Remove="Controllers\Right\**" />
+    <None Remove="Controllers\Right\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\Login\css\bootstrap.min.css.map" />
   </ItemGroup>
 
@@ -1603,10 +1610,6 @@
     <ProjectReference Include="..\Victory.Template.DataAccess\Victory.Template.DataAccess.csproj" />
     <ProjectReference Include="..\Victory.Template.Entity\Victory.Template.Entity.csproj" />
     <ProjectReference Include="..\Victory.Template.Facade\Victory.Template.Facade.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\Right\" />
   </ItemGroup>
 
 </Project>
