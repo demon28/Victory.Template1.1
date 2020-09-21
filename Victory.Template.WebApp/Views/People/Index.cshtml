@@ -130,7 +130,7 @@
                                 </td>
 
                                 <td>
-                                    <button type="button" class="btn bg-purple  btn-xs" v-on:click="Role(item)">分配权限</button>
+                                    <button type="button" class="btn bg-purple  btn-xs" v-on:click="Role(item)">分配角色</button>
                                     &nbsp;
                                     <button type="button" class="btn bg-red  btn-xs" v-on:click="Del(item)">删除</button>
                                 </td>
@@ -190,7 +190,7 @@
                                         <label>
 
                                             <input type="checkbox" @@click="ChangeRole(item)" v-model="item.checked" style="height:20px;width:20px;" />
-                                            {{ item.Rolename }}
+                                            {{ item.Role_Name }}
                                         </label>
 
                                     </td>
@@ -363,7 +363,7 @@
 
                                 var rolearray = result.Content;
 
-                                AjaxPost({
+                                MyAjax({
                                     url: "/People/GetUserRoleMebmer",
                                     type: "POST",
                                     data: {

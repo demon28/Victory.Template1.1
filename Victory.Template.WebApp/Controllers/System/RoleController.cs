@@ -12,20 +12,14 @@ using Victory.Template.WebApp.Attribute;
 namespace Victory.Template.WebApp.Controllers
 {
     [Authorize]
-    public class UserRoleController : TopControllerBase
+    public class RoleController : TopControllerBase
     {
+
+        [Permission(PowerName = "角色管理")]
         public IActionResult Index()
         {
             return View();
         }
-
-        [Permission(PowerName = "角色管理")]
-        public IActionResult Role()
-        {
-            return View();
-        }
-
-
 
 
         [Permission(PowerName = "添加角色")]
@@ -85,7 +79,13 @@ namespace Victory.Template.WebApp.Controllers
 
         }
 
-
+        [Permission(PowerName = "查询功能")]
+        [HttpPost]
+        public IActionResult ListFunc()
+        {
+            Tright_Operation_Da da = new Tright_Operation_Da();
+            return SuccessResultList(da.Select.ToTreeList());
+        }
 
 
 
@@ -108,7 +108,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        
+
 
 
 

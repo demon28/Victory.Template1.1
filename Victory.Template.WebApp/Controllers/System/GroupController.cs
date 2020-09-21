@@ -77,6 +77,7 @@ namespace Victory.Template.WebApp.Controllers.System
         public IActionResult DelGroup(int id)
         {
             Tright_Group_Da da = new Tright_Group_Da();
+            //TODO:此处要递归删除
 
             if (da.Delete(s => s.Id == id) > 0)
             {

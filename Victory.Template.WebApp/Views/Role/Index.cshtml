@@ -29,7 +29,12 @@
                     <div class="box-tools">
 
                         <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
-                            <button type="button" class="btn btn-default pull-right" @@click="ShowAdd()" id="btn_Search">添加角色</button>
+                          
+                            <button type="button" class="btn btn-default  pull-right" @@click="ShowAdd()" id="btn_Search">权限互查</button>
+                        </div>
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-default  pull-right" @@click="ShowAdd()" id="btn_Search">添加角色</button>
+                         
                         </div>
 
                     </div>
@@ -52,7 +57,7 @@
 
                             <tr v-for="(item,index) in list">
                                 <td>{{item.Id}}</td>
-                                <td>{{item.Rolename}}</td>
+                                <td>{{item.Role_Name}}</td>
 
                                 <td style="text-align:right">
                                     <button type="button" class="btn bg-blue  btn-xs" v-on:click="ShowPower(item)">权限配置</button>
@@ -87,7 +92,7 @@
         </div>
 
 
-  
+
 
         <!-- /.col -->
         <div class="col-md-8">
@@ -104,32 +109,32 @@
                 <div class="box-body table-responsive no-padding">
 
 
-                            <table class="table">
+                    <table class="table">
                         <tbody>
                             <tr>
 
                                 <th>访问权限</th>
 
-                                <th>操作权限</th> 
+                                <th>操作权限</th>
 
                             </tr>
 
-                            <template v-for="(item,index) in powerlist" >
+                            <template v-for="(item,index) in powerlist">
                                 <tr>
-                                 
+
                                     <td>
                                         <input type="checkbox" @@click="ChangePower(item)" v-model="item.checked" />
-                                        {{item.Powername}}
+                                        {{item.Name}}
                                     </td>
 
                                     <td style=" vertical-align: middle;text-align:left">
 
-                                        <div v-for="(child,index) in  item.Childs" >
+                                        <div v-for="(child,index) in  item.Childs">
 
                                             <label style="margin-left:20px;float:left">
 
-                                                <input type="checkbox" @@click="ChangePower(child)" v-model="child.checked"  />
-                                                {{ child.Powername }}
+                                                <input type="checkbox" @@click="ChangePower(child)" v-model="child.checked" />
+                                                {{ child.Name }}
                                             </label>
                                         </div>
 
@@ -138,7 +143,7 @@
 
 
 
-                 
+
 
                             </template>
 
@@ -191,7 +196,7 @@
                             <label for="txt_projectname" class="col-sm-3 control-label">角色名称：</label>
 
                             <div class="col-sm-7">
-                                <input type="text" class="form-control" v-model="roleitem.Rolename">
+                                <input type="text" class="form-control" v-model="roleitem.Role_Name">
                             </div>
                         </div>
 
@@ -222,7 +227,7 @@
         </div>
     </div>
 
-  
+
 
 
 
@@ -259,8 +264,8 @@
                    var self = this;
 
 
-                   AjaxPost({
-                       url: "/UserRole/ListRole",
+                   MyAjax({
+                       url: "/Role/ListRole",
                        type: "POST",
                        data: {
 
@@ -288,8 +293,8 @@
                    bootbox.confirm("您确定删除改记录吗？", function (res) {
                        if (res) {
 
-                           AjaxPost({
-                               url: "/UserRole/DelRole",
+                           MyAjax({
+                               url: "/Role/DelRole",
                                type: "POST",
                                data: {
                                    id: item.Id
@@ -316,8 +321,8 @@
                    var _self = this;
 
 
-                   AjaxPost({
-                       url: "/UserRole/AddRole",
+                   MyAjax({
+                       url: "/Role/AddRole",
                        type: "POST",
                        data: _self.roleitem,
                        success: function (result) {
@@ -337,8 +342,8 @@
                },
                Update: function () {
                    var _self = this;
-                   AjaxPost({
-                       url: "/UserRole/UpdateRole",
+                   MyAjax({
+                       url: "/Role/UpdateRole",
                        type: "POST",
                        data: _self.roleitem,
                        success: function (result) {
@@ -392,8 +397,8 @@
 
                    if (!item.checked) {
 
-                       AjaxPost({
-                           url: "/UserRole/AddRolePowerMebmer",
+                       MyAjax({
+                           url: "/Role/AddRolePowerMebmer",
                            type: "POST",
                            data: {
                                powerid: item.Id,
@@ -413,8 +418,8 @@
 
                    } else {
 
-                       AjaxPost({
-                           url: "/UserRole/DeletedRolePowerMebmer",
+                       MyAjax({
+                           url: "/Role/DeletedRolePowerMebmer",
                            type: "POST",
                            data: {
                                id: item.RPID
@@ -440,8 +445,8 @@
                },
                BindPowerList() {
                    var _self = this;
-                   AjaxPost({
-                       url: "/UserRight/ListFunc",
+                   MyAjax({
+                       url: "/Role/ListFunc",
                        type: "POST",
                        success: function (result) {
 
@@ -458,8 +463,8 @@
 
 
 
-                           AjaxPost({
-                               url: "/UserRole/GetRolePowerMebmer",
+                           MyAjax({
+                               url: "/Role/GetRolePowerMebmer",
                                type: "POST",
                                data: {
                                    roleid: _self.roleid

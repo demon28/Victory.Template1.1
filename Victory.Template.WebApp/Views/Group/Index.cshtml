@@ -23,34 +23,14 @@
     <style>
 
 
-        .tree_menu {
-            position: fixed;
-            display: block;
-            z-index: 20000;
-            background-color: #fff;
-            padding: 5px 0;
-            border: 1px solid #ebeef5;
-            border-radius: 4px;
-            box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        .custom-tree-node {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            padding-right: 8px;
         }
-
-            .tree_menu ul {
-                margin: 0;
-                padding: 0;
-            }
-
-                .tree_menu ul li {
-                    list-style: none;
-                    margin: 0;
-                    padding: 0 15px;
-                    font-size: 14px;
-                    line-height: 30px;
-                    cursor: pointer;
-                }
-
-                    .tree_menu ul li:hover {
-                        background-color: #ebeef5
-                    }
     </style>
 
 
@@ -67,7 +47,7 @@
     <div class="row" style="margin-top:10px">
 
         <!-- /.col -->
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title">用户组</h3>
@@ -76,58 +56,65 @@
 
                         <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
 
-                            <button type="button" class="btn btn-sm pull-right bg-blue" @@click="AddGroup()" id="btn_Search">   <i class="fa fa-align-justify"></i> 创建根组织</button>
+                            <button type="button" class="btn btn-sm pull-right" @@click="AddGroup()" id="btn_Search">   <i class="fa fa-align-justify"></i> 创建根组织</button>
                         </div>
 
                     </div>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body table-responsive no-padding">
+                <div class="box-body table-responsive no-padding ">
+                    <div class="custom-tree-container">
+                        <div class="block">
 
-                    <el-tree :data="grouplist"
-                             :props="defaultProps"
-                             node-key="id"
-                             default-expand-all
-                             :expand-on-click-node="false"
-                             @@node-click="handleNodeClick"
-                             @@node-contextmenu="rightClick"></el-tree>
+                            <el-tree :data="grouplist"
+                                     :props="defaultProps"
+                                     node-key="id"
+                                     default-expand-all
+                                     :expand-on-click-node="false"
+                                     @@node-click="handleNodeClick"
+                                    >
 
-                    <div id="perTreeMenu" v-if="tmDisplay" class="tree_menu" :style="{...rightMenu}">
-                        <ul>
-                            <li @@click="MenuAddGroup()">
-                                <i class="el-icon-tickets"></i> 新建
-                            </li>
-                            <li @@click="UpdateGroup()">
-                                <i class="el-icon-edit"></i> 编辑
-                            </li>
-                            <li @@click="DelGroup()">
-                                <i class="el-icon-delete"></i> 删除
-                            </li>
-                        </ul>
+                                <span class="custom-tree-node" slot-scope="{ node, data }">
+                                    <span style="font-size:15px">{{ node.label }}</span>
+                                    <span>
+                                        <small class="label bg-blue"  @@click="UpdateGroup(node, data)">添加</small>
+                                        &nbsp; &nbsp;
+                                        <small class="label bg-green" @@click="UpdateGroup(node, data)">授权</small>
+                                        &nbsp; &nbsp;
+                                        <small class="label bg-yellow"  @@click="UpdateGroup(node, data)">编辑</small>
+                                        &nbsp; &nbsp;
+                                        <small class="label  bg-red"  @@click="DelGroup(node, data)">删除</small>
+                                    </span>
+                                </span>
+
+
+                            </el-tree>
+
+                    
+                        </div>
                     </div>
 
+                        </div>
+                        <!-- /.box-body -->
 
-                </div>
-                <!-- /.box-body -->
+
+                        <div class="box-footer no-padding">
+                            <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                            </div>
 
 
-                <div class="box-footer no-padding">
-                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
 
+                            <!-- /.pull-right -->
+                        </div>
                     </div>
-
-
-
-                    <!-- /.pull-right -->
                 </div>
-            </div>
-        </div>
 
 
 
 
         <!-- /.col -->
-        <div class="col-md-9">
+        <div class="col-md-8">
             <div class="box box-success">
                 <div class="box-header">
                     <h3 class="box-title">{{checkGroup.Group_Name}}</h3>
@@ -384,7 +371,7 @@
                 DelGroup() {
                     bootbox.confirm({
                         size: "small",
-                        message: "您确定删除改文件夹吗?",
+                        message: "您确定删除该分组吗?",
                         callback: function (res) {
 
                             if (!res) {
@@ -422,7 +409,7 @@
 
                     bootbox.prompt({
                         size: "small",
-                        title: "请输入文件夹名称:",
+                        title: "请输入分组名称:",
                         value: self.checkGroup.Group_Name,
                         callback: function (res) {
 
@@ -458,29 +445,13 @@
                 Search() {
                     this.Query();
                 },
-                MenuAddGroup() {
-                    this.AddGroup(self.checkGroup.Id);
-                },
+              
                 handleNodeClick(data) {
                     console.log(data);
                     self.checkGroup = data;
                     self.InitPeople(1);
                 },
-                rightClick(e, data, node, comp) {
-                    //设置右键菜单
-                    // console.log('e:', e, 'data', data, "node", node);
-
-                    self.checkGroup = data;
-                    this.rightMenu = { top: e.pageY + 'px', left: e.pageX + 'px' }
-                    this.tmDisplay = true
-
-
-                    document.onclick = function (ev) {
-                        if (ev.target !== document.getElementById('perTreeMenu')) {
-                            self.tmDisplay = false
-                        }
-                    }
-                },
+              
                 InitPeople(index) {
 
                     //默认加载第一个文件夹
@@ -722,7 +693,7 @@
 
                     bootbox.confirm({
                         size: "small",
-                        message: "您确定删除改文件吗?",
+                        message: "您确定删除该选项吗?",
                         callback: function (res) {
 
                             if (!res) {
