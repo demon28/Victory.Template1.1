@@ -86,7 +86,7 @@ desired effect
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><img src="~/Image/V.png" style="width:30px;height:30px"></span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>Victory&nbsp;系统框架</b></span>
+                <span class="logo-lg"><b>Victory&nbsp;系统框架1.1</b></span>
             </a>
 
 
@@ -188,9 +188,6 @@ desired effect
 
 
                 <ul class="sidebar-menu" data-widget="tree" id="menu_list">
-
-
-
                 </ul>
 
 
@@ -326,9 +323,8 @@ desired effect
     <script src="~/Script/EnumHelper.js"></script>
 
     <!--Axios请求封装--Lte框架放弃使用Axios，继续使用jquery，ElementUI 框架使用Axios  -->
-
     @*<script src="~/Script/AxiosRequsetHelper.js"></script>
-    <script src="~/lib/qs/qs.js"></script>*@
+        <script src="~/lib/qs/qs.js"></script>*@
 
 
     <!--Ajax请求拦截器-->
@@ -338,7 +334,7 @@ desired effect
 
     <script>
 
-         // vue 嵌套挂载，有数据，问题，所以这用JQ 绑定一下数据 Layout 不适合用uve
+        // vue 嵌套挂载，有数据，问题，所以这用JQ 绑定一下数据 Layout 不适合用uve
         //本框架，缺点 目前之支持2级别菜单。 其实 多一级循环就可以支持三级菜单，等有具体需求的时候 再实现吧
 
         $(document).ready(function () {
@@ -348,13 +344,13 @@ desired effect
             MyAjax({
                 type: "POST",
                 url: '/Home/GetLoginUser',
-                showloading:false,
+                showloading: false,
                 success: function (res) {
                     if (!res.Success) {
                         alert_info(res.Message);
                         return;
                     }
-                      //  console.log(res);
+                    //  console.log(res);
 
                     var _self = {};
                     _self.userId = res.Content.UserId;
@@ -379,7 +375,7 @@ desired effect
                     //加载菜单
                     LoadMenu(_self.menu);
 
-                    
+
                 }
 
             });
@@ -400,22 +396,47 @@ desired effect
 
                 for (let li of item.Childs) {
                     if (li.Menu_Url.toLowerCase() == location.toLowerCase()) {
-                        isActive ="active treeview menu-open"
+                        isActive = "active treeview menu-open"
                     }
                 }
 
                 content += `<li class=" ${isActive}">
-                        <a href="#">
-                            <i class="${item.Icon}"></i> <span>${item.Menu_Name}</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu"> `;
-              
+                            <a href="#">
+                                <i class="${item.Icon}"></i> <span>${item.Menu_Name}</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu"> `;
+
 
                 for (let li of item.Childs) {
-                    content += `<li><a href="${li.Menu_Url}"><i class="${li.Icon}"></i> ${li.Menu_Name}</a></li>`
+
+                    //支持三级菜单,加多一层循环，加载第第三层菜单
+
+                    if (li.Childs.length > 0) {
+                        content += `<li class="treeview">
+                                <a href="#"><i class="${li.Icon}"></i> ${li.Menu_Name}
+                                     <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">`;
+
+
+                        for (let l of li.Childs) {
+                            content += `<li><a href="${li.Menu_Url}"><i class="${li.Icon}"></i> ${l.Menu_Name}</a></li>`;
+                        }
+
+                        content += `  </ul> </li>`;
+
+
+                    } else {
+                        content += `<li><a href="${li.Menu_Url}"><i class="${li.Icon}"></i> ${li.Menu_Name}</a></li>`
+                    }
+
+
+
                 }
 
                 content += `</ul> </li>`;
@@ -424,7 +445,7 @@ desired effect
             $("#menu_list").html(content);
         }
 
-       
+
 
 
     </script>

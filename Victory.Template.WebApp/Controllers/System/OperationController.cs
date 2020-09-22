@@ -21,7 +21,7 @@ namespace Victory.Template.WebApp.Controllers
             return View();
         }
 
-        [Permission(PowerName = "查询功能")]
+        [Permission(PowerName = "查询")]
         [HttpPost]
         public IActionResult ListFunc()
         {
@@ -30,7 +30,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Permission(PowerName = "添加功能")]
+        [Permission(PowerName = "添加")]
         [HttpPost]
         public IActionResult AddFunc(Tright_Power model)
         {
@@ -48,7 +48,7 @@ namespace Victory.Template.WebApp.Controllers
         }
 
 
-        [Permission(PowerName = "修改功能")]
+        [Permission(PowerName = "修改")]
         [HttpPost]
         public IActionResult UpdateFunc(Tright_Power model)
         {
@@ -67,7 +67,7 @@ namespace Victory.Template.WebApp.Controllers
 
 
 
-        [Permission(PowerName = "删除功能")]
+        [Permission(PowerName = "删除")]
         [HttpPost]
         public IActionResult DelFunc(int id)
         {

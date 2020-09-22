@@ -55,7 +55,6 @@ namespace Victory.Template.DataAccess.CodeGenerator
     WHERE  tp.id='1' AND tm.Status=0  and  vur.userid=@userid 
    
 ";
-
             return this.Select.WithSql(sql,new { userid= userid }).OrderBy(s=>s.Sortid).ToTreeList();
 
 

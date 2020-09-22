@@ -43,7 +43,6 @@ Near
                 <!-- /.box-header -->
                 <div class="box-body table-responsive no-padding">
 
-
                     <table class="table">
                         <tbody>
                             <tr>
@@ -63,6 +62,8 @@ Near
                             </tr>
 
                             <template v-for="(item,index) in list">
+
+
 
                                 <tr>
                                     <td> {{item.Id}}</td>
@@ -94,7 +95,10 @@ Near
                                 <tr v-for="(child,index) in item.Childs" v-if="item.ChildsShow">
                                     <td> {{child.Id}}</td>
                                     <td>
-                                        <span style="margin-left:30px">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
+                                        <span style="margin-left:30px" v-if="child.Childs.length==0">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
+                                        <span style="margin-left:30px" v-if="child.Childs.length>0 && !child.ChildsShow">&nbsp;&nbsp;&nbsp; <i v-if="!child.ChildsShow" @@click="ChildsShow(child,true)" class="fa fa-plus-square-o"></i></span>
+                                        <span style="margin-left:30px" v-if="child.Childs.length>0 && child.ChildsShow">&nbsp;&nbsp;&nbsp; <i v-if="child.ChildsShow" @@click="ChildsShow(child,false)" class="fa fa-minus-square-o"></i></span>
+
 
                                         {{child.Menu_Name}}
                                     </td>
@@ -116,10 +120,50 @@ Near
                                     </td>
 
                                 </tr>
+
+
+                                <template v-for="child in item.Childs">
+                              
+                                        <tr v-for="(node,index) in child.Childs" v-if="true">
+                                            <td>
+                                                {{node.Id}} --- {{child.ChildsShow?"true":"false"}}----{{child.Menu_Name}}
+
+                                            </td>
+                                            <td>
+
+                                                <span style="margin-left:60px">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
+
+
+                                                {{node.Menu_Name}}
+                                            </td>
+                                            <td> {{node.Menu_Url==null?"根目录":node.Menu_Url}}</td>
+                                            <td> {{node.Parent_Id}}</td>
+                                            <td>
+
+                                                <span class="label label-success" v-if="item.Status==0">启用</span>
+                                                <span class="label label-danger" v-if="item.Status==1">禁用</span>
+                                            </td>
+                                            <td> {{node.Icon}}</td>
+                                            <td> {{node.Sortid}}</td>
+
+                                            <td style="text-align:right">
+
+                                                <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(node)">修改</button>
+                                                &nbsp;      &nbsp;
+                                                <button type="button" class="btn bg-red btn-xs" v-on:click="Del(node)">删除</button>
+                                            </td>
+
+                                        </tr>
+                                   
+                                </template>
+
+
                             </template>
 
 
-                        </tbody>
+
+                                
+</tbody>
                     </table>
                 </div>
                 <!-- /.box-body -->
@@ -261,7 +305,7 @@ Near
                        data: { },
                        success: function (result) {
 
-                        console.log(JSON.stringify(result));
+                          // console.log(JSON.stringify(result));
 
                            if (!result.Success) {
 
@@ -278,7 +322,7 @@ Near
                                self.list.push(item);
                            }
 
-
+                           console.log(JSON.stringify(self.list));
 
                        }
                    })
@@ -373,8 +417,9 @@ Near
                ChildsShow(item, isShow) {
 
                    item.ChildsShow = isShow;
-
-               }
+                   console.log("更改后", item);
+               },
+              
               
               
            },
