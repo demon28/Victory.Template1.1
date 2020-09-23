@@ -32,16 +32,15 @@ namespace Victory.Template.WebApp.Controllers
 
         [Permission(PowerName = "添加")]
         [HttpPost]
-        public IActionResult AddFunc(Tright_Power model)
+        public IActionResult AddFunc(Tright_Operation model)
         {
-           // if (string.IsNullOrEmpty(model.Powername))
-           // {
-           //     return FailMessage("权限名不能为空！");
-           // }
-
-           //Tright_Power_Da da = new Tright_Power_Da();
-
-           // da.Insert(model);
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                return FailMessage("权限名不能为空！");
+            }
+            model.Code = Guid.NewGuid().ToString();
+            Tright_Operation_Da da = new Tright_Operation_Da();
+            da.Insert(model);
 
             return SuccessMessage("成功！");
   
@@ -50,18 +49,18 @@ namespace Victory.Template.WebApp.Controllers
 
         [Permission(PowerName = "修改")]
         [HttpPost]
-        public IActionResult UpdateFunc(Tright_Power model)
+        public IActionResult UpdateFunc(Tright_Operation model)
         {
 
-           // if (string.IsNullOrEmpty(model.Powername))
-           // {
-           //     return FailMessage("权限名不能为空！");
-           // }
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                return FailMessage("权限名不能为空！");
+            }
 
-           //Tright_Power_Da da = new Tright_Power_Da();
-           //da.Update(model);
+            Tright_Operation_Da da = new Tright_Operation_Da();
+            da.Update(model);
 
-           return SuccessMessage("成功！");
+            return SuccessMessage("成功！");
            
         }
 
@@ -71,9 +70,9 @@ namespace Victory.Template.WebApp.Controllers
         [HttpPost]
         public IActionResult DelFunc(int id)
         {
-            Tright_Power_Da da = new Tright_Power_Da();
+            Tright_Operation_Da da = new Tright_Operation_Da();
 
-            if (da.Delete(s => s.Id == id) > 0)
+            if (da.Where(s => s.Id == id).AsTreeCte().ToDelete().ExecuteAffrows() > 0)
             {
                 return SuccessMessage();
               

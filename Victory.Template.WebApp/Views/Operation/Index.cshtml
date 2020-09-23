@@ -9,7 +9,6 @@
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">Power</li>
     </ol>
-
 }
 
 <section class="content" id="tab">
@@ -19,12 +18,12 @@
         <div>
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">List</h3>
+                    <h3 class="box-title">操作列表</h3>
 
                     <div class="box-tools">
 
                         <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
-                            <button type="button" class="btn btn-default pull-right" @@click="ShowAdd()" id="btn_Search">添加权限</button>
+                            <button type="button" class="btn btn-default pull-right" @@click="ShowAdd()" id="btn_Search">添加操作</button>
                         </div>
 
                     </div>
@@ -32,101 +31,32 @@
                 <!-- /.box-header -->
                 <div class="box-body table-responsive no-padding">
 
-
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <th>ID</th>
-                                <th>功能名称</th>
-
-                                <th>路由地址</th>
-                                <th>归属ID</th>
-                                <th>功能类型</th>
-
-                                <th>域</th>
-                                <th>控制器</th>
-                                <th>Action</th>
-                                <th>排序ID</th>
-
-                                <th>备注</th>
-                                <th style="text-align:right">
-                                    操作
-                                </th>
-                            </tr>
-
-                            <template v-for="(item,index) in list" >
-                                <tr>
-                                    <th>{{item.Id}}</th>
-                                    <td>
-
-                                        <i v-if="!item.ChildsShow" @@click="ChildsShow(item,true)" class="fa fa-plus-square-o"></i>
-                                        <i v-if="item.ChildsShow" @@click="ChildsShow(item,false)" class="fa  fa-minus-square-o"></i>
-
-
-                                        {{item.Name}}
-                                    </td>
-                                    <td>
-                                        {{item.Url}}
-                                    </td>
-                                    <td>{{item.Parent_Id}}</td>
-                                    <td>{{SetType(item.Type)}}</td>
-
-                                    <td>{{item.Area}}</td>
-                                    <td>{{item.Controller}}</td>
-                                    <td>{{item.Action}}</td>
-                                    <td>{{item.Sortid}}</td>
-
-
-                                    <td>{{item.Remarks}}</td>
-
-
-                                    <td style="text-align:right">
-
-                                        <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(item)">修改</button>
-                                        &nbsp;      &nbsp;
-                                        <button type="button" class="btn bg-red btn-xs" v-on:click="Del(item)">删除</button>
-                                    </td>
-                                </tr>
-
-
-
-                                <tr  v-for="(child,index) in item.Childs" v-if="item.ChildsShow">
-                                    <th>{{child.Id}}</th>
-                                    <td>
-
-
-                                        <span v-if="child.Type==0" style="margin-left:30px">&nbsp;&nbsp;&nbsp;&nbsp;L</span>
-
-                                        {{child.Name}}
-                                    </td>
-                                    <td>
-                                        {{child.Url}}
-                                    </td>
-                                    <td>{{child.Parent_Id}}</td>
-                                    <td>{{SetType(child.Type)}}</td>
-
-                                    <td>{{child.Area}}</td>
-                                    <td>{{child.Controller}}</td>
-                                    <td>{{child.Action}}</td>
-                                    <td>{{child.Sortid}}</td>
-
-
-                                    <td>{{child.Remarks}}</td>
-
-
-                                    <td style="text-align:right">
-
-                                        <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(child)">修改</button>
-                                        &nbsp;      &nbsp;
-                                        <button type="button" class="btn bg-red btn-xs" v-on:click="Del(child)">删除</button>
-                                    </td>
-                                </tr>
-
-
+                    <el-table :data="list"
+                              style="width: 100%;"
+                              row-key="Id"
+                              :tree-props="{children: 'Childs'}">
+                        <el-table-column prop="Id" label="Id"></el-table-column>
+                        <el-table-column prop="Name" label="功能名称"> </el-table-column>
+                        <el-table-column prop="Url" label="路由地址" width="200"> </el-table-column>
+                        <el-table-column prop="Parent_Id" label="ID"> </el-table-column>
+                        <el-table-column prop="Type" label="功能类型">
+                            <template slot-scope="scope">
+                                {{SetType(scope.row.Type)}}
                             </template>
+                        </el-table-column>
+                        <el-table-column prop="Area" label="域" width="100">  </el-table-column>
+                        <el-table-column prop="Controller" label="控制器" width="100">  </el-table-column>
+                        <el-table-column prop="Action" label="Action">  </el-table-column>
+                        <el-table-column prop="Sortid" label="排序ID">  </el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="scope">
+                                <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(scope.row)">修改</button>
+                                &nbsp;&nbsp;
+                                <button type="button" class="btn bg-red btn-xs" v-on:click="Del(scope.row)">删除</button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
 
-                        </tbody>
-                    </table>
                 </div>
                 <!-- /.box-body -->
 
@@ -138,12 +68,8 @@
 
                     <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
 
-                        <ul class="pagination pagination-sm no-margin pull-right" id="ul_page">
-                        </ul>
                     </div>
-
-
-                    <!-- /.pull-right -->
+                  
                 </div>
             </div>
         </div>
@@ -176,9 +102,6 @@
                             </div>
                         </div>
 
-
-
-
                         <div class="form-group ">
                             <label for="txt_address" class="col-sm-3 control-label">权限类型：</label>
 
@@ -193,8 +116,6 @@
                             </div>
 
                         </div>
-
-
 
                         <div class="form-group">
                             <label for="txt_kehuname" class="col-sm-3 control-label">路由：</label>
@@ -211,10 +132,6 @@
                                 <input type="text" class="form-control" v-model="poweritem.Parent_Id">
                             </div>
                         </div>
-
-
-
-
 
                         <div class="form-group">
                             <label for="txt_kehuname" class="col-sm-3 control-label">域：</label>
@@ -237,9 +154,6 @@
                                 <input type="text" class="form-control" v-model="poweritem.Action">
                             </div>
                         </div>
-
-
-
 
                         <div class="form-group">
                             <label for="txt_kehuname" class="col-sm-3 control-label">排序id：</label>
@@ -323,15 +237,7 @@
                                alert_danger(result.Message);
                                return;
                            }
-
-
-                           for (var i = 0; i < result.Content.length; i++) {
-
-                               let item = result.Content[i];
-                               item.ChildsShow = false;
-
-                               self.list.push(item);
-                           }
+                           self.list = result.Content;
 
                        }
                    })
@@ -425,14 +331,9 @@
                    this.poweritem.POWERTYPE = 1;//设置下拉框默认值
                },
                SetType(value) {
-
                    return EnumGetSingle(value, Power_Typelist());
-               },
-               ChildsShow(item,isShow) {
-
-                   item.ChildsShow = isShow;
-
                }
+            
               
            },
 

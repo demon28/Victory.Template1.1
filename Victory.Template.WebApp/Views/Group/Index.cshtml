@@ -14,14 +14,8 @@
 
 @section Htmlhead{
 
-    <!--加载ElementUi组件-->
-
-    <link href="~/lib/element-ui/theme-chalk/index.css" rel="stylesheet" />
-    <script src="~/lib/element-ui/index.js"></script>
-    <script src="~/lib/element-ui/locale/zh-CN.js"></script>
 
     <style>
-
 
         .custom-tree-node {
             flex: 1;
@@ -71,44 +65,43 @@
                                      node-key="id"
                                      default-expand-all
                                      :expand-on-click-node="false"
-                                     @@node-click="handleNodeClick"
-                                    >
+                                     @@node-click="handleNodeClick">
 
                                 <span class="custom-tree-node" slot-scope="{ node, data }">
                                     <span style="font-size:15px">{{ node.label }}</span>
                                     <span>
-                                        <small class="label bg-blue"  @@click="UpdateGroup(node, data)">添加</small>
+                                        <small class="label bg-blue" @@click="AddGroup(node, data)">添加</small>
                                         &nbsp; &nbsp;
-                                        <small class="label bg-green" @@click="UpdateGroup(node, data)">授权</small>
+                                        <small class="label bg-green" @@click="ShowGroupRole(node, data)">角色</small>
                                         &nbsp; &nbsp;
-                                        <small class="label bg-yellow"  @@click="UpdateGroup(node, data)">编辑</small>
+                                        <small class="label bg-yellow" @@click="UpdateGroup(node, data)">编辑</small>
                                         &nbsp; &nbsp;
-                                        <small class="label  bg-red"  @@click="DelGroup(node, data)">删除</small>
+                                        <small class="label  bg-red" @@click="DelGroup(node, data)">删除</small>
                                     </span>
                                 </span>
 
 
                             </el-tree>
 
-                    
+
                         </div>
                     </div>
 
-                        </div>
-                        <!-- /.box-body -->
-
-
-                        <div class="box-footer no-padding">
-                            <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
-
-                            </div>
-
-
-
-                            <!-- /.pull-right -->
-                        </div>
-                    </div>
                 </div>
+                <!-- /.box-body -->
+
+
+                <div class="box-footer no-padding">
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
+
+                    </div>
+
+
+
+                    <!-- /.pull-right -->
+                </div>
+            </div>
+        </div>
 
 
 
@@ -181,10 +174,16 @@
 
                     </div>
 
-                    <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
-                        <zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
-                                  v-bind:max-page="pageModel.ToTalPage" v-on:pagehandler="InitPeople">
-                        </zpagenav>
+                    <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" >
+
+                        <el-pagination background
+                                       layout="total, prev, pager, next,sizes"
+                                       @@current-change="InitPeople"
+                                       @@size-change="PageSizeChange"
+                                       :page-sizes="[10, 20, 50,100]"
+                                       :page-size="pageModel.pageSize"
+                                       :total="pageModel.TotalCount">
+                        </el-pagination>
                     </div>
 
 
@@ -253,6 +252,51 @@
 
 
 
+    <div class="modal fade" id="modal-role">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" >绑定角色</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <th>角色列表</th>
+
+                                </tr>
+                                <tr v-for="(item,index) in rolelist">
+                                    <td style=" vertical-align:middle">
+                                        <label>
+
+                                            <input type="checkbox" @@click="ChangeRole(item)" v-model="item.checked" style="height:20px;width:20px;" />
+                                            {{ item.Role_Name }}
+                                        </label>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
+
+
 </section>
 
 
@@ -272,21 +316,21 @@
                 keywords: "",
                 checkGroup: {},   //当前选中的文件夹节点
                 checkList: [],
-                tmDisplay: false,   //是否显示右键菜单
+
                 defaultProps: {
                     children: 'Childs',
                     label: 'Group_Name'
                 },
                 pageModel: {
                     pageIndex: 1,
-                    pageSize: 20,
+                    pageSize: 10,
                     TotalCount: 0,
                     ToTalPage: 0,
                 },
                 queryKeys: "",
                 queryArray: [],
-                checkArray: []
-
+                checkArray: [],
+                rolelist:[]
             },
             created: function () {
                 self = this;
@@ -324,10 +368,10 @@
                         }
                     })
                 },
-                AddGroup(pid) {
+                AddGroup(node, data) {
                     //添加文件夹
 
-                    console.log("====父级ID", pid);
+                    console.log("====父级ID", node, data);
 
                     bootbox.prompt({
                         size: "small",
@@ -341,7 +385,7 @@
 
                             var model = {};
                             model.Group_Name = res;
-                            model.Parent_Id = pid;
+                            model.Parent_Id = data.Id;
 
                             MyAjax({
                                 url: "/Group/AddGroup",
@@ -363,7 +407,6 @@
                             });
 
                         }
-
 
                     })
 
@@ -445,13 +488,15 @@
                 Search() {
                     this.Query();
                 },
-              
+                PageSizeChange(size) {
+                    this.pageModel.pageSize = size;
+                    this.InitPeople(1);
+                },
                 handleNodeClick(data) {
                     console.log(data);
                     self.checkGroup = data;
                     self.InitPeople(1);
                 },
-              
                 InitPeople(index) {
 
                     //默认加载第一个文件夹
@@ -636,11 +681,7 @@
                 PeopleAllRight() {
 
                     for (let item of self.queryArray) {
-
-                        if (!self.HasPeople(item.Workid)) {
                             self.checkArray.push(item);
-                        }
-
                     }
                 },
                 HasPeople(Workid) {
@@ -727,7 +768,15 @@
                     });
 
 
-                }
+                },
+                ShowGroupRole() {
+                    $('#modal-role').modal('show');
+                },
+                ChangeRole(item) {
+
+
+                },
+
             }
         });
 

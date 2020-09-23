@@ -80,30 +80,25 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <th>Id</th>
-                                <th>类型</th>
-                                <th>内容</th>
-                                <th>时间</th>
 
-                            </tr>
-                            <tr v-for="(item,index) in list">
-                                <td>{{item.Id}}</td>
-                                <td>
-                                    <span class="label label-success" v-if="item.Type==1">用户登录</span>
-                                    <span class="label label-danger" v-if="item.Type==2">系统异常</span>
-                                    <span class="label label-warning" v-if="item.Type==3">系统异常</span>
-                                </td>
+                    <el-table :data="list">
+                        <el-table-column prop="Id" label="Id"   width="100"> </el-table-column>
+                        <el-table-column prop="Type" label="类型" width="100">
+                            <template slot-scope="scope">
+                                <span class="label label-success" v-if="scope.row.Type==1">用户登录</span>
+                                <span class="label label-danger" v-if="scope.row.Type==2">系统异常</span>
+                                <span class="label label-warning" v-if="scope.row.Type==3">系统异常</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="Content"
+                                         label="内容">
+                        </el-table-column>
 
-                                <td>{{item.Content}}</td>
-                                <td style="width:150px">{{item.Createtime}}</td>
+                        <el-table-column prop="Createtime"  width="200"
+                                         label="时间">
+                        </el-table-column>
+                    </el-table>
 
-                            </tr>
-
-                        </tbody>
-                    </table>
                 </div>
                 <!-- /.box-body -->
 
@@ -115,9 +110,14 @@
 
                     <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
 
-                        <zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
-                                  v-bind:max-page="pageModel.ToTalPage" v-on:pagehandler="Init">
-                        </zpagenav>
+                        <el-pagination background
+                                       layout="total, prev, pager, next,sizes"
+                                        @@current-change="Init"
+                                        @@size-change="PageSizeChange"
+                                        :page-sizes="[10, 20, 50,100]"
+                                        :page-size="pageModel.pageSize"
+                                       :total="pageModel.TotalCount">
+                        </el-pagination>
 
                     </div>
 
@@ -147,7 +147,7 @@
                 list: [],
                 pageModel: {
                     pageIndex: 1,
-                    pageSize: 15,
+                    pageSize: 10,
                     TotalCount: 0,
                     ToTalPage: 0,
                 },
@@ -161,13 +161,10 @@
             },
             created: function () {
                 self = this;
-
                 this.Init(1);
             },
             mounted() {
                 this.EnterKeyup();
-
-
 
                 $('#txt_enddate,#txt_stardate').datetimepicker({
                     language: 'zh-CN', //语言选择中文 注：旧版本 新版方法：
@@ -182,15 +179,11 @@
 
                 Init: function (index) {
 
-
-                   
-
                     //时间控件，不能用v-model 双向绑定
                     self.condition.keystartime = $("#txt_stardate").val();
                     self.condition.keyendTime = $("#txt_enddate").val();
 
-                    console.log("日志类型", self.keytype);
-
+               
                     MyAjax({
                         url: "/SysLog/List",
                         type:"POST",
@@ -222,6 +215,10 @@
                     })
                 },
                 Search: function () {
+                    this.Init(1);
+                },
+                PageSizeChange: function (size) {
+                    this.pageModel.pageSize = size;
                     this.Init(1);
                 },
                 EnterKeyup() {

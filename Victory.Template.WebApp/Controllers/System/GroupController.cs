@@ -77,9 +77,8 @@ namespace Victory.Template.WebApp.Controllers.System
         public IActionResult DelGroup(int id)
         {
             Tright_Group_Da da = new Tright_Group_Da();
-            //TODO:此处要递归删除
-
-            if (da.Delete(s => s.Id == id) > 0)
+            int count = da.Where(s => s.Id == id).AsTreeCte().ToDelete().ExecuteAffrows();
+            if (count > 0)
             {
                 return SuccessMessage("已删除！");
 
@@ -100,7 +99,7 @@ namespace Victory.Template.WebApp.Controllers.System
             Tright_Group_Da da = new Tright_Group_Da();
             var list = da.ListPeopleByGroup(groupid, keyword, ref page);
 
-            return SuccessResult(list);
+            return SuccessResultList(list, page);
 
         }
 
@@ -110,11 +109,11 @@ namespace Victory.Template.WebApp.Controllers.System
         /// <param name="keyword"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult QueryPeople(string keyword)
+        public IActionResult QueryPeople(string keyword, int pageIndex, int pageSize)
         {
-
             Tsys_User_Da da = new Tsys_User_Da();
             var list = da.ListByWhere(keyword);
+
             return SuccessResult(list);
         }
 
@@ -151,8 +150,6 @@ namespace Victory.Template.WebApp.Controllers.System
                 insertPeople = list;
             }
 
-          
-
 
             if (!da.BatchInsert(insertPeople))
             {
@@ -174,6 +171,7 @@ namespace Victory.Template.WebApp.Controllers.System
         {
 
             Tright_User_Group_Da da = new Tright_User_Group_Da();
+
 
             if (da.Delete(s => s.Id == tugid) > 0)
             {
