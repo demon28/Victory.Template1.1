@@ -264,26 +264,20 @@
                 <div class="modal-body">
 
                     <div class="box-body table-responsive no-padding">
-                        <table class="table table-hover">
-                            <tbody>
-                                <tr>
-                                    <th>角色列表</th>
 
-                                </tr>
-                                <tr v-for="(item,index) in rolelist">
-                                    <td style=" vertical-align:middle">
-                                        <label>
+                        <el-table :data="rolelist"
+                                  style="width: 100%;"
+                                  row-key="Id"
+                                  ref="tab_role"
+                                  @@select="ChangeRole"
+                                 >
+                            <el-table-column type="selection"  width="55" >
+                            </el-table-column>
+                            <el-table-column prop="Role_Name" label="角色名称"></el-table-column>
 
-                                            <input type="checkbox" @@click="ChangeRole(item)" v-model="item.checked" style="height:20px;width:20px;" />
-                                            {{ item.Role_Name }}
-                                        </label>
+                        </el-table>
 
-                                    </td>
 
-                                </tr>
-
-                            </tbody>
-                        </table>
                     </div>
 
                 </div>
@@ -769,11 +763,100 @@
 
 
                 },
-                ShowGroupRole() {
+                ShowGroupRole(node, data) {
+                    self.InitRoleList(data);
                     $('#modal-role').modal('show');
+                   
                 },
-                ChangeRole(item) {
+                InitRoleList(data) {
 
+                    var groupid = data.Id;
+
+                    MyAjax({
+                        url: "/Group/ListRole",
+                        data: {
+
+                        }, type: "POST",
+                        showloading: false,
+                        success: function (result) {
+
+                            console.log("角色列表",result);
+
+                            if (!result.Success) {
+                                alert_info(result.Message);
+                                return;
+                            }
+                            self.rolelist = result.Content;
+
+
+                            MyAjax({
+                                url: "/Group/ListGroupRole",
+                                type: "POST",
+                                showloading: false,
+                                data: {
+                                    groupid: groupid
+                                },
+                                success: function (result) {
+
+                                    console.log("根据groupid获取的角色",result);
+
+                                    if (!result.Success) {
+                                        alert_info(result.Message);
+                                        return;
+                                    }
+
+                                    for (var i = 0; i < result.Content.length; i++) {
+
+                                        for (var j = 0; j < self.rolelist.length; j++) {
+
+                                            if (result.Content[i].Role_Id == self.rolelist[j].Id) {
+
+                                                //self.rolelist[j].checked = true;
+                                                self.$refs.tab_role.toggleRowSelection(self.rolelist[j], true);
+                                            } else {
+                                               // self.rolelist[j].checked = false;
+                                            }
+                                        }
+                                      
+                                    }
+
+                                }
+                            })
+
+                        }
+                    })
+
+                },
+                ChangeRole(item, row) {
+
+                    //console.log("item", item);
+                    //console.log("checkGroup", this.checkGroup);
+                    //console.log("row", row);
+
+                    var isbind = item.length && item.indexOf(row) !== -1;  //判断是否选中
+                    var roleid = row.Id;
+                    var groupid = this.checkGroup.Id;
+
+                    MyAjax({
+                        url: "/Group/BindGroupRole",
+                        type: "POST",
+                        showloading: false,
+                        data: {
+                            groupid: groupid,
+                            roleid: roleid,
+                            isbind: isbind
+                        },
+                        success: function (result) {
+
+                            console.log(result);
+
+                            if (!result.Success) {
+                                alert_info(result.Message);
+                                return;
+                            }
+                            alert_success(result.Message);
+                        }
+                    })
 
                 },
 

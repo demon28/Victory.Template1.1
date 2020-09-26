@@ -60,7 +60,7 @@
                                 <td>{{item.Role_Name}}</td>
 
                                 <td style="text-align:right">
-                                    <button type="button" class="btn bg-blue  btn-xs" v-on:click="ShowPower(item)">权限配置</button>
+                                    <button type="button" class="btn bg-blue  btn-xs" v-on:click="ShowPower(item)">功能配置</button>
                                     &nbsp;      &nbsp;
                                     <button type="button" class="btn bg-purple  btn-xs" v-on:click="ShowUpdate(item)">修改</button>
                                     &nbsp;      &nbsp;
@@ -100,9 +100,8 @@
                 <div class="box-header">
                     <h3 class="box-title">{{rolename}}</h3>
 
-                    <div class="box-tools">
-
-
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -374,9 +373,12 @@
                },
                ShowPower(item) {
                    //先按顺序查出所有的权限
+                   console.log("先按顺序查出所有的权限",item);
+
+
                    var _self = this;
                    _self.roleid = item.Id;
-                   _self.rolename=item.Rolename
+                   _self.rolename = item.Role_Name
                    _self.powerlist = {};
                    _self.BindPowerList();
 
@@ -435,19 +437,14 @@
                                return;
                            }
                        })
-
                    }
-
-
-
-
-
                },
                BindPowerList() {
                    var _self = this;
                    MyAjax({
                        url: "/Role/ListFunc",
                        type: "POST",
+                       showloading: false,
                        success: function (result) {
 
                            if (!result.Success) {
@@ -458,10 +455,7 @@
 
                            var Powerlist = result.Content;
 
-                           console.log("powerList:")
-                           console.log(Powerlist);
-
-
+                       
 
                            MyAjax({
                                url: "/Role/GetRolePowerMebmer",
@@ -482,17 +476,14 @@
 
                                    var RolePowerlist = res.Content;
 
-                                   console.log("RoleList:")
-                                   console.log(RolePowerlist);
+                                   console.log("RolePowerlist:", RolePowerlist, "powerList", Powerlist);
 
                                    for (var i = 0; i < Powerlist.length; i++) {
 
                                        for (var j = 0; j < RolePowerlist.length; j++) {
 
-
-                                           console.log("分别打出来：Powerlist[i].Id===" + Powerlist[i].Id + "    RolePowerlist[j].Powerid===" + RolePowerlist[j].Powerid)
-
-                                           if (Powerlist[i].Id == RolePowerlist[j].Powerid) {
+                                         
+                                           if (Powerlist[i].Id == RolePowerlist[j].Power_Id) {
 
                                                Powerlist[i].checked = true;
                                                Powerlist[i].RPID = RolePowerlist[j].Id;  //自定义一个属性并赋值
@@ -503,7 +494,7 @@
 
                                            for (var k = 0; k < Powerlist[i].Childs.length; k++) {
 
-                                               if (Powerlist[i].Childs[k].Id == RolePowerlist[j].Powerid) {
+                                               if (Powerlist[i].Childs[k].Id == RolePowerlist[j].Power_Id) {
 
                                                    Powerlist[i].Childs[k].checked = true;
                                                    Powerlist[i].Childs[k].RPID = RolePowerlist[j].Id;  //自定义一个属性并赋值

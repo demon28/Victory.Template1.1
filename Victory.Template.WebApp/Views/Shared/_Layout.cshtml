@@ -51,7 +51,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link href="~/Script/zpage/zpageNav.css" rel="stylesheet" />
     <script src="~/Script/zpage/zpageNav.js"></script>
 
-
+    
     <!--加载ElementUi组件-->
 
     <link href="~/lib/element-ui/theme-chalk/index.css" rel="stylesheet" />
@@ -179,16 +179,16 @@ desired effect
                 </div>
 
                 <!-- search form (Optional) -->
-                <form action="#" method="get" class="sidebar-form">
+                <div class="sidebar-form">
                     <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Search...">
+                        <input type="text" name="q" class="form-control" placeholder="Search..." id="txt_words">
                         <span class="input-group-btn">
-                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat" onclick="Search()">
                                 <i class="fa fa-search"></i>
                             </button>
                         </span>
                     </div>
-                </form>
+                </div>
                 <!-- /.search form -->
                 <!-- Sidebar Menu -->
 
@@ -451,6 +451,11 @@ desired effect
             $("#menu_list").html(content);
         }
 
+        function Search() {
+
+            $("")
+
+        }
 
 
 

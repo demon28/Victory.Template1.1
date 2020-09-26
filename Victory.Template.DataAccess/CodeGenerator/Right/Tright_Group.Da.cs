@@ -96,7 +96,27 @@ namespace Victory.Template.DataAccess.CodeGenerator
         }
 
 
+        /// <summary>
+        /// 根据组id，获取组拥有的角色
+        /// </summary>
+        /// <param name="gid"></param>
+        /// <returns></returns>
 
+        public List<RightRoleGroupModel> ListRoleByGroup(int gid)
+        {
+
+            return this.Orm.Select< Tright_Group_Role, Tright_Role>()
+              .LeftJoin((a, b) => a.Role_Id == b.Id)
+              .Where((a, b) => a.Group_Id == gid)
+              .ToList((a, b) => new RightRoleGroupModel() { 
+              
+                Group_Id=a.Group_Id,
+                Role_Id=a.Role_Id,
+                Role_Name=b.Role_Name
+              
+              });
+
+        }
     }
 
 }

@@ -9,6 +9,7 @@ using Victory.Core.Models;
 using Victory.Template.WebApp.Attribute;
 using Victory.Template.DataAccess.CodeGenerator;
 using Victory.Template.Entity.CodeGenerator;
+using System.Threading;
 
 namespace Victory.Template.WebApp.Controllers.System
 {
@@ -192,6 +193,48 @@ namespace Victory.Template.WebApp.Controllers.System
                 return SuccessMessage("删除成功！");
             }
             return FailMessage("删除失败！");
+        }
+
+        [HttpPost]
+        public IActionResult ListRole()
+        {
+            Tright_Role_Da da = new Tright_Role_Da();
+         
+            return SuccessResult(da.Select.ToList());
+        }
+
+        [HttpPost]
+        public IActionResult ListGroupRole(int groupid) {
+
+            Tright_Group_Da da = new Tright_Group_Da();
+
+            return SuccessResult(da.ListRoleByGroup(groupid));
+        }
+
+
+        [HttpPost]
+        public IActionResult BindGroupRole(int groupid,int roleid,bool isbind)
+        {
+            Tright_Group_Role_Da da = new Tright_Group_Role_Da();
+
+            if (isbind)
+            {
+                Tright_Group_Role model = new Tright_Group_Role();
+                model.Group_Id = groupid;
+                model.Role_Id = roleid;
+
+                da.Insert(model);
+                return SuccessMessage("操作成功！");
+            }
+
+
+           int count= da.Delete(s => s.Group_Id == groupid && s.Role_Id == roleid);
+
+            if (count>0)
+            {
+                return SuccessMessage("操作成功！");
+            }
+            return FailMessage("操作失败！");
         }
 
     }
