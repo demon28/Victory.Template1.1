@@ -2,7 +2,6 @@
     ViewData["Title"] = "资产管理系统";
 
     Layout = "";
-
 }
 
 <!DOCTYPE html>
@@ -35,7 +34,7 @@
     <title>登录</title>
 </head>
 
-<body class="logobg_style">
+<body class="logobg_style" style="overflow-y: hidden">
     <div id="large-header" class="large-header login-page" v-cloak>
         <canvas id="demo-canvas"></canvas>
         <div class="login-form">
@@ -65,7 +64,8 @@
                         </div>
 
                     </div>
-                    <div class=" textright"><a class="forget" @@click="Forget">忘记密码？</a></div>
+                    <div class=" textright"><a class="forget" @@click="Forget">忘记密码?</a></div>
+                    <br />
                     <div class="tishi" ref="tip" v-if="messageshow">
                         <div class='prompt'><i class='tishi_icon'></i>{{message}}</div>
                     </div>
@@ -79,10 +79,6 @@
                     <!-- Implemented in v1.1.4 -->				<div class="form-group">
 
                     </div>
-
-
-
-
                 </form>
             </div>
 

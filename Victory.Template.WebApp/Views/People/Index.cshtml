@@ -9,9 +9,9 @@
 @section Pageheader{
 
     <h1>
-        <small>  人员信息</small>
-
+        <small>人员信息</small>
     </h1>
+
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">People</li>
@@ -52,7 +52,6 @@
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default " @@click="Search()" id="btn_Search"><i class="fa fa-search"></i></button>
-
                             </div>
                         </div>
                     </div>
@@ -147,21 +146,15 @@
                             <tbody>
                                 <tr>
                                     <th>角色列表</th>
-
-
                                 </tr>
                                 <tr v-for="(item,index) in rolelist">
                                     <td style=" vertical-align:middle">
                                         <label>
-
                                             <input type="checkbox" @@click="ChangeRole(item)" v-model="item.checked" style="height:20px;width:20px;" />
                                             {{ item.Role_Name }}
                                         </label>
-
                                     </td>
-
                                 </tr>
-
                             </tbody>
                         </table>
                     </div>
@@ -178,7 +171,7 @@
     <!-- 新增/修改Dialog -->
     <el-dialog :visible.sync="addUserDialogVisible" @@closed="addUserDialogClosed">
         <div slot="title" class="dialog-title">
-
+            <el-page-header content="详情页面"></el-page-header>
         </div>
         <el-form :model="addUser" ref="addUserForm">
             <el-form-item label="姓名" :label-width="formLabelWidth" prop="Name">
@@ -232,6 +225,7 @@
                 <el-input v-model="addUser.Remarks" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
+
         <div slot="footer" class="dialog-footer">
             <el-button @@click="addUserDialogVisible = false">取 消</el-button>
             <el-button type="primary" @@click="addUserFun" v-if="isAdd">新增</el-button>
@@ -285,7 +279,7 @@
                     Dtname: "",
                     Status: 0,
                     Isadmin: 1,
-                    Comedate: "",
+                    Comedate: new Date(),
                     Remarks: ""
                 },
 
@@ -354,6 +348,7 @@
                             message: '用户工号不能为空!',
                             type: 'warning'
                         });
+                        return;
                     }
 
                     if (self.addUser.Name == "") {
@@ -362,6 +357,7 @@
                             message: '用户姓名不能为空!',
                             type: 'warning'
                         });
+                        return;
                     }
 
                     if (self.addUser.Pwd == "") {
@@ -370,6 +366,7 @@
                             message: '用户密码不能为空!',
                             type: 'warning'
                         });
+                        return;
                     }
 
                     MyAjax({
@@ -415,6 +412,7 @@
                             message: '用户工号不能为空!',
                             type: 'warning'
                         });
+                        return;
                     }
 
                     if (self.addUser.Name == "") {
@@ -423,6 +421,7 @@
                             message: '用户姓名不能为空!',
                             type: 'warning'
                         });
+                        return;
                     }
 
                     if (self.addUser.Pwd == "") {
@@ -431,6 +430,7 @@
                             message: '用户密码不能为空!',
                             type: 'warning'
                         });
+                        return;
                     }
 
 
@@ -471,16 +471,16 @@
                         Pwd: "",
                         Workid: "",
                         Phone: "",
-                        Sex: "0",
+                        Sex: 0,
                         Dep1: "",
                         Dep2: "",
                         Dep3: "",
                         Dep4: "",
                         Dep5: "",
                         Dtname: "",
-                        Status: "0",
-                        Isadmin: "1",
-                        Comedate: "",
+                        Status: 0,
+                        Isadmin: 1,
+                        Comedate: new Date(),
                         Remarks: ""
                     };
                     self.isAdd = true;

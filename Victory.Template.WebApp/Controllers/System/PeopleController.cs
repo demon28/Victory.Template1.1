@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using Victory.Core.Controller;
 using Victory.Core.Encrypt;
@@ -58,6 +59,7 @@ namespace Victory.Template.WebApp.Controllers
             }
 
             user.Pwd = Md5.Encrypt32(user.Pwd);
+            user.Createtime = DateTime.Now;
 
             Tsys_User_Da da = new Tsys_User_Da();
 
