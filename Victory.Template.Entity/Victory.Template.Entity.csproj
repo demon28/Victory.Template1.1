@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeSql" Version="1.7.0" />
-    <PackageReference Include="Victory.Core" Version="1.0.14" />
+    <PackageReference Include="FreeSql" Version="1.9.0" />
+    <PackageReference Include="Victory.Core" Version="1.0.15" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,5 @@
 using FreeSql.DataAnnotations;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 using Victory.Template.Entity.Enums;
 
 namespace Victory.Template.Entity.CodeGenerator
@@ -12,12 +9,10 @@ namespace Victory.Template.Entity.CodeGenerator
     ///</summary>
     public class Tsys_User
     {
+        public Tsys_User()
+        {
 
-       public Tsys_User()
-       {
-      
-       }
-
+        }
 
         ///<summary>
         ///描述：
@@ -88,15 +83,5 @@ namespace Victory.Template.Entity.CodeGenerator
         ///描述：是否项目成员
         ///</summary>
         public IsAdmin Isadmin { get; set; }
-
-
     }
 }
-
-
-
-
-
-
-
-

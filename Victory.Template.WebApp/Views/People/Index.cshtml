@@ -2,19 +2,11 @@
     ViewData["Title"] = "EAM-资产管理系统";
 }
 
-
-
-
 @section Htmlhead{
-
-
 
 }
 
-
 @section Pageheader{
-
-
 
     <h1>
         <small>  人员信息</small>
@@ -24,27 +16,17 @@
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">People</li>
     </ol>
-
-
 }
-
 
 <section class="content" id="tab">
     <div class="row">
-
         <!-- /.col -->
         <div>
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">List</h3>
+                    <h3 class="box-title"></h3>
 
                     <div class="box-tools">
-
-                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
-
-                            <button type="button" class="btn btn-sm " @@click="Import()"><i class="fa fa-download"></i> 批量删除</button>
-
-                        </div>
                         <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
                             <button type="button" class="btn btn-sm pull-right" @@click="DownTemp()" id="btn_Add">下载模板</button>
                         </div>
@@ -53,16 +35,16 @@
                             <button type="button" class="btn btn-sm pull-right" @@click="Export()" id="btn_Search"><i class="fa fa-upload"></i> 导出</button>
                         </div>
 
-
                         <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
-
                             <button type="button" class="btn btn-sm " @@click="Import()"><i class="fa fa-download"></i> 导入</button>
-
                         </div>
+
                         <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-sm " @@click="batchDelete()"><i class="fa fa-download"></i> 批量删除</button>
+                        </div>
 
-                            <button type="button" class="btn btn-sm " @@click="Import()"><i class="fa fa-download"></i> 新增用户</button>
-
+                        <div class="input-group input-group-sm  col-md-1 pull-right ml-1" style="margin-left:10px;">
+                            <button type="button" class="btn btn-sm " @@click="addUserDialogVisible = true"><i class="fa fa-download"></i> 新增用户</button>
                         </div>
 
                         <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
@@ -72,95 +54,73 @@
                                 <button type="button" class="btn btn-default " @@click="Search()" id="btn_Search"><i class="fa fa-search"></i></button>
 
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <th><input type="checkbox" id="check_all"> 全选</th>
-                                <th>工号</th>
-                                <th>姓名</th>
-
-                                <th>职务</th>
-
-
-                                <th>二级部门</th>
-                                <th>三级部门</th>
-                                <th>四级部门</th>
-                                <th>五级部门</th>
-
-                                <th>电话</th>
-                                <th>性别</th>
-                                <th>状态</th>
-                                <th>入职时间</th>
-                                <th>允许登录</th>
-                                <th>操作</th>
-                            </tr>
-                            <tr v-for="(item,index) in list">
-                                <td><input type="checkbox" :id="item.Id" name="check_item"> </td>
-                                <td>{{item.Workid}}</td>
-                                <td>{{item.Name}}</td>
-                                <td>{{item.Dtname}}</td>
-
-                                <td>{{item.Dep2}}</td>
-                                <td >{{item.Dep3}}</td>
-                                <td>{{item.Dep4}}</td>
-                                <td>{{item.Dep5}}</td>
-
-                                <td>{{item.Phone}}</td>
-
-                                <td>
-                                    <span class="label bg-blue" v-if="item.Sex ==0">男</span>
-                                    <span class="label bg-red " v-if="item.Sex ==1">女</span>
-                                </td>
-
-                                <td>
-                                    <span class="label label-success" v-if="item.Status==0">在职</span>
-                                    <span class="label label-warning" v-if="item.Status==1">离职</span>
-                                    <span class="label label-danger" v-if="item.Status==2">锁定</span>
-                                </td>
-
-                                <td>{{item.Comedate}}</td>
-
-
-                                <td>
-                                    <span class="label bg-red" v-if="item.Isadmin ==0">禁止</span>
-                                    <span class="label bg-green " v-if="item.Isadmin ==1">允许</span>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="btn bg-purple  btn-xs" v-on:click="Role(item)">分配角色</button>
-                                    &nbsp;
-                                    <button type="button" class="btn bg-red  btn-xs" v-on:click="Del(item)">删除</button>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
+                    <el-table ref="multipleTable"
+                              :data="tableData"
+                              stripe
+                              tooltip-effect="dark"
+                              style="width: 100%"
+                              @@selection-change="handleSelectionChange">
+                        <el-table-column type="selection" width="40" align="center"></el-table-column>
+                        <el-table-column prop="Workid" label="工号" width="80"> </el-table-column>
+                        <el-table-column prop="Name" label="姓名" width="80"></el-table-column>
+                        <el-table-column prop="Dtname" label="职务" show-overflow-tooltip> </el-table-column>
+                        <el-table-column prop="Dep2" label="二级部门" show-overflow-tooltip> </el-table-column>
+                        <el-table-column prop="Dep3" label="三级部门" show-overflow-tooltip></el-table-column>
+                        <el-table-column prop="Dep4" label="四级部门" show-overflow-tooltip> </el-table-column>
+                        <el-table-column prop="Dep5" label="五级部门" show-overflow-tooltip> </el-table-column>
+                        <el-table-column prop="Phone" label="电话" width="100" show-overflow-tooltip></el-table-column>
+                        <el-table-column prop="Sex" label="性别" width="60" align="center">
+                            <template slot-scope="scope">
+                                <span class="label bg-blue" v-if="scope.row.Sex ==0">男</span>
+                                <span class="label bg-red " v-if="scope.row.Sex ==1">女</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="Status" label="状态" width="60" align="center">
+                            <template slot-scope="scope">
+                                <span class="label label-success" v-if="scope.row.Status==0">在职</span>
+                                <span class="label label-warning" v-if="scope.row.Status==1">离职</span>
+                                <span class="label label-danger" v-if="scope.row.Status==2">锁定</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="Comedate" label="入职时间" show-overflow-tooltip></el-table-column>
+                        <el-table-column prop="Isadmin" label="允许登录" width="80" align="center">
+                            <template slot-scope="scope">
+                                @*<span class="label bg-red" v-if="scope.row.Isadmin ==0">禁止</span>
+                                    <span class="label bg-green " v-if="scope.row.Isadmin ==1">允许</span>*@
+                                <el-switch v-model="scope.row.Isadmin === 1"
+                                           active-color="#00a65a"
+                                           inactive-color="#dd4b39">
+                                </el-switch>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" width="170" align="center">
+                            <template slot-scope="scope">
+                                <button type="button" class="btn bg-purple btn-xs" v-on:click="Role(scope.row)">分配角色</button>
+                                <button type="button" class="btn bg-orange btn-xs" v-on:click="updateUser(scope.row)" style="margin-left:4px">修改</button>
+                                <button type="button" class="btn bg-red btn-xs" v-on:click="deleteUserFun(scope.row)" style="margin-left:4px">删除</button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </div>
                 <!-- /.box-body -->
 
-
                 <div class="box-footer no-padding">
-                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px">
-
-                    </div>
+                    <div class="card-footer clearfix pull-left" style="margin-left:20px;margin-top:30px;margin-bottom:30px"> </div>
 
                     <div class="card-footer clearfix pull-right " style="margin-right:30px;margin-top:30px;margin-bottom:30px" id="div_page">
-
-                        <zpagenav v-bind:page="pageModel.pageIndex" v-bind:page-size="pageModel.pageSize" v-bind:total="pageModel.TotalCount"
-                                  v-bind:max-page="pageModel.ToTalPage" v-on:pagehandler="Init">
-                        </zpagenav>
-
+                        <el-pagination @@current-change="Init(pageModel.pageIndex)"
+                                       :current-page.sync="pageModel.pageIndex"
+                                       :page-size="pageModel.pageSize"
+                                       background
+                                       layout="total, prev, pager, next"
+                                       :total="pageModel.TotalCount">
+                        </el-pagination>
                     </div>
-
-
                     <!-- /.pull-right -->
                 </div>
             </div>
@@ -170,7 +130,7 @@
     <!-- /.col -->
     <!-- /.row -->
     <!-- /.modal-dialog -->
-
+    <!-- 角色管理模态框 -->
     <div class="modal fade" id="modal-default">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -214,230 +174,551 @@
             <!-- /.modal-content -->
         </div>
     </div>
+
+    <!-- 新增/修改Dialog -->
+    <el-dialog :visible.sync="addUserDialogVisible" @@closed="addUserDialogClosed">
+        <div slot="title" class="dialog-title">
+
+        </div>
+        <el-form :model="addUser" ref="addUserForm">
+            <el-form-item label="姓名" :label-width="formLabelWidth" prop="Name">
+                <el-input v-model="addUser.Name" autocomplete="off" clearable :disabled="!isAdd"></el-input>
+            </el-form-item>
+            <el-form-item label="工号" :label-width="formLabelWidth" prop="Workid">
+                <el-input v-model="addUser.Workid" autocomplete="off" clearable :disabled="!isAdd"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" :label-width="formLabelWidth" prop="Pwd">
+                <el-input type="password" v-model="addUser.Pwd" autocomplete="off" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="性别" :label-width="formLabelWidth" prop="Sex">
+                <el-radio v-model="addUser.Sex" :label="0" border>男</el-radio>
+                <el-radio v-model="addUser.Sex" :label="1" border>女</el-radio>
+            </el-form-item>
+            <el-form-item label="职务" :label-width="formLabelWidth" prop="Dtname">
+                <el-input v-model="addUser.Dtname" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="二级部门" :label-width="formLabelWidth" prop="Dep2">
+                <el-input v-model="addUser.Dep2" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="三级部门" :label-width="formLabelWidth" prop="Dep3">
+                <el-input v-model="addUser.Dep3" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="四级部门" :label-width="formLabelWidth" prop="Dep4">
+                <el-input v-model="addUser.Dep4" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="五级部门" :label-width="formLabelWidth" prop="Dep5">
+                <el-input v-model="addUser.Dep5" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" :label-width="formLabelWidth" prop="Phone">
+                <el-input v-model="addUser.Phone" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="状态" :label-width="formLabelWidth" prop="Status">
+                <el-radio v-model="addUser.Status" :label="0" border>在职</el-radio>
+                <el-radio v-model="addUser.Status" :label="1" border>离职</el-radio>
+                <el-radio v-model="addUser.Status" :label="2" border>锁定</el-radio>
+            </el-form-item>
+            <el-form-item label="入职时间" :label-width="formLabelWidth" prop="Comedate">
+                <el-date-picker v-model="addUser.Comedate"
+                                type="datetime"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                placeholder="选择日期时间">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="允许登录" :label-width="formLabelWidth" prop="Isadmin">
+                <el-radio v-model="addUser.Isadmin" :label="1" border>允许</el-radio>
+                <el-radio v-model="addUser.Isadmin" :label="0" border>禁止</el-radio>
+            </el-form-item>
+            <el-form-item label="备注" :label-width="formLabelWidth" prop="Remarks">
+                <el-input v-model="addUser.Remarks" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @@click="addUserDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @@click="addUserFun" v-if="isAdd">新增</el-button>
+            <el-button type="primary" @@click="updateUserFun" v-if="!isAdd">修改</el-button>
+        </div>
+    </el-dialog>
+
     <!-- /.modal-dialog -->
 
 </section>
 
 
 @section scripts{
- 
 
     <script >
-       
+
         var self;
-            var vm2 = new Vue({
-                el: "#tab",
-                data: {
-                    list: [],
-                    pageModel: {
-                        pageIndex: 1,
-                        pageSize: 10,
-                        TotalCount: 0,
-                        ToTalPage: 0,
-                    },
-
-                    rolelist: [],
-                    userrolelist: [],
-                  
-                    userid: 0,
-                    keywork:""
+        var vm2 = new Vue({
+            el: "#tab",
+            data: {
+                list: [],
+                pageModel: {
+                    pageIndex: 1,
+                    pageSize: 10,
+                    TotalCount: 0,
+                    ToTalPage: 0,
                 },
-                created: function () {
-                    self = this;
 
+                tableData: [],
+
+                currentPage: 1,  //当前页
+
+                addUserDialogVisible: false, //新增dialog是否显示
+                formLabelWidth: "100px",
+
+                multipleSelection: [],  //多选项
+
+                isAdd: true,
+
+                addUser: {
+                    Name: "",
+                    Pwd: "",
+                    Workid: "",
+                    Phone: "",
+                    Sex: 0,
+                    Dep1: "",
+                    Dep2: "",
+                    Dep3: "",
+                    Dep4: "",
+                    Dep5: "",
+                    Dtname: "",
+                    Status: 0,
+                    Isadmin: 1,
+                    Comedate: "",
+                    Remarks: ""
+                },
+
+                rolelist: [],
+                userrolelist: [],
+
+                userid: 0,
+                keywork: ""
+            },
+
+            created: function () {
+                self = this;
+
+                this.Init(1);
+            },
+
+            mounted() {
+                this.EnterKeyup();
+            },
+
+            methods: {
+                //加载人员    
+                Init(index) {
+
+                    console.log(self);
+
+                    MyAjax({
+                        url: "/People/List",
+                        type: "post",
+                        data: {
+                            pageIndex: index,
+                            pageSize: self.pageModel.pageSize,
+                            keyword: self.keywork,
+                        },
+                        success: function (result) {
+
+                            console.log(result);
+
+                            if (!result.Success) {
+                                alert_info(result.Message);
+                            }
+
+                            self.list = result.Content;
+                            self.tableData = result.Content;
+
+                            self.pageModel.pageIndex = result.PageIndex;
+                            self.pageModel.pageSize = result.PageSize;
+                            self.pageModel.TotalCount = result.TotalCount;
+                            self.pageModel.ToTalPage = result.ToTalPage;
+                        }
+                    })
+                },
+
+                //搜索
+                Search() {
                     this.Init(1);
                 },
-                mounted() {
-                    this.EnterKeyup();
+
+                //新增用户
+                addUserFun() {
+                    console.log(self.addUser);
+
+                    if (self.addUser.Workid == "") {
+                        self.$message({
+                            showClose: true,
+                            message: '用户工号不能为空!',
+                            type: 'warning'
+                        });
+                    }
+
+                    if (self.addUser.Name == "") {
+                        self.$message({
+                            showClose: true,
+                            message: '用户姓名不能为空!',
+                            type: 'warning'
+                        });
+                    }
+
+                    if (self.addUser.Pwd == "") {
+                        self.$message({
+                            showClose: true,
+                            message: '用户密码不能为空!',
+                            type: 'warning'
+                        });
+                    }
+
+                    MyAjax({
+                        url: "/People/AddUser",
+                        type: "post",
+                        data: {
+                            user: self.addUser
+                        },
+                        success: function (result) {
+                            if (!result.Success) {
+                                self.$message({
+                                    showClose: true,
+                                    message: result.Message,
+                                    type: 'warning'
+                                });
+                                return;
+                            }
+
+                            self.$message({
+                                showClose: true,
+                                message: result.Content,
+                                type: 'success'
+                            });
+
+                            self.addUserDialogVisible = false;
+                            self.Init(1);
+                        }
+                    })
                 },
-                methods: {
-                    
-                    Init(index) {
 
-                        console.log(self);
+                //点击修改用户
+                updateUser(user) {
+                    Object.assign(self.addUser, user);
+                    self.addUserDialogVisible = true;
+                    self.isAdd = false;
+                },
 
+                //修改用户提交
+                updateUserFun() {
+                    if (self.addUser.Workid == "") {
+                        self.$message({
+                            showClose: true,
+                            message: '用户工号不能为空!',
+                            type: 'warning'
+                        });
+                    }
+
+                    if (self.addUser.Name == "") {
+                        self.$message({
+                            showClose: true,
+                            message: '用户姓名不能为空!',
+                            type: 'warning'
+                        });
+                    }
+
+                    if (self.addUser.Pwd == "") {
+                        self.$message({
+                            showClose: true,
+                            message: '用户密码不能为空!',
+                            type: 'warning'
+                        });
+                    }
+
+
+                    MyAjax({
+                        url: "/People/UpdateUser",
+                        type: "POST",
+                        data: {
+                            user: self.addUser
+                        },
+                        success: function (result) {
+                            if (!result.Success) {
+                                self.$message({
+                                    showClose: true,
+                                    message: result.Message,
+                                    type: 'warning'
+                                });
+                                return;
+                            }
+
+                            self.$message({
+                                showClose: true,
+                                message: result.Content,
+                                type: 'success'
+                            });
+
+                            self.addUserDialogVisible = false;
+                            self.Init(1);
+                        }
+                    })
+                },
+
+                //新增or修改用户界面关闭
+                addUserDialogClosed() {
+                    //清空内容
+                    self.$refs.addUserForm.resetFields();
+                    self.addUser = {
+                        Name: "",
+                        Pwd: "",
+                        Workid: "",
+                        Phone: "",
+                        Sex: "0",
+                        Dep1: "",
+                        Dep2: "",
+                        Dep3: "",
+                        Dep4: "",
+                        Dep5: "",
+                        Dtname: "",
+                        Status: "0",
+                        Isadmin: "1",
+                        Comedate: "",
+                        Remarks: ""
+                    };
+                    self.isAdd = true;
+                },
+
+                //删除用户
+                deleteUserFun(user) {
+                    this.$confirm('是否删除用户[' + user.Name + ']?', '提示', {
+                        confirmButtonText: '删除',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
                         MyAjax({
-                            url: "/People/List",
-                            type:"post",
+                            url: "/People/DeleteUser",
+                            type: "post",
                             data: {
-                                pageIndex: index,
-                                pageSize: self.pageModel.pageSize,
-                                keyword: self.keywork,
+                                id: user.Id
                             },
                             success: function (result) {
-
-                                console.log(result);
-
                                 if (!result.Success) {
-                                    alert_info(result.Message);
+                                    self.$message({
+                                        showClose: true,
+                                        message: result.Message,
+                                        type: 'warning'
+                                    });
+                                    return;
                                 }
 
-                                self.list = result.Content;
+                                self.$message({
+                                    showClose: true,
+                                    message: result.Content,
+                                    type: 'success'
+                                });
 
-                                self.pageModel.pageIndex = result.PageIndex;
-                                self.pageModel.pageSize = result.PageSize;
-                                self.pageModel.TotalCount = result.TotalCount;
-                                self.pageModel.ToTalPage = result.ToTalPage;
+                                self.Init(1);
                             }
                         })
-                    },
-                    Search() {
-                        this.Init(1);
-                    },
-                    EnterKeyup() {
-                        var _self = this;
-                        document.onkeypress = function (e) {
-                            var keycode = document.all ? event.keyCode : e.which;
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
 
-                            if (keycode == 13) {
-                                self.Init(1);
-                                return false;
+                //选中项改变时
+                handleSelectionChange(val) {
+                    self.multipleSelection = [];
+
+                    val.forEach(function (c) {
+                        self.multipleSelection.push(c.Id);
+                    });
+                },
+
+                //批量删除用户
+                batchDelete() {
+                    if (self.multipleSelection.length <= 0) {
+                        self.$message({
+                            showClose: true,
+                            message: "未选中人员！",
+                            type: 'warning'
+                        });
+                        return;
+                    }
+
+                    MyAjax({
+                        url: "/People/BatchDeleteUser",
+                        type: "POST",
+                        data: {
+                            Ids: self.multipleSelection
+                        },
+                        success: function (result) {
+                            if (!result.Success) {
+                                self.$message({
+                                    showClose: true,
+                                    message: result.Message,
+                                    type: 'warning'
+                                });
+                                return;
                             }
-                        };
-                    },
-                    ChangeRole(item) {
 
-                        var _self = this;
-                        if (!item.checked) {
+                            self.$message({
+                                showClose: true,
+                                message: result.Content,
+                                type: 'success'
+                            });
 
-                            MyAjax({
-                                url: "/People/AddUserRoleMebmer",
-                                type: "POST",
-                                data: {
-                                    userid: _self.userid,
-                                    roleid: item.Id
-                                },
-                                success: function (res) {
-                                    console.log(res);
-                                    if (!res.Success) {
-                                        alert_danger(res.Message);
-                                        return;
-                                    }
-                                    _self.BindRoleList();
-                                    alert_success(res.Message);
-                                    return;
-                                }
-                            })
-
-                        } else {
-
-                            MyAjax({
-                                url: "/People/DeleteUserRoleMebmer",
-                                type: "POST",
-                                data: {
-                                    id: item.URID
-                                },
-                                success: function (res) {
-
-                                    if (!res.Success) {
-                                        alert_danger(res.Message);
-                                        return;
-                                    }
-                                    _self.BindRoleList();
-                                    alert_success(res.Message);
-                                    return;
-                                }
-                            })
-
+                            self.Init(1);
                         }
-                    },
-                    Role(item) {
+                    })
+                },
 
-                        var _self = this;
-                        _self.userid = item.Id;
-
-                        _self.BindRoleList();
-
-                        $('#modal-default').modal('show');
-
-                    },
-                    BindRoleList() {
-                        var _self = this;
+                //改变角色权限
+                ChangeRole(item) {
+                    var _self = this;
+                    if (!item.checked) {
 
                         MyAjax({
-                            url: "/People/GetAllRole",
+                            url: "/People/AddUserRoleMebmer",
                             type: "POST",
                             data: {
-
+                                userid: _self.userid,
+                                roleid: item.Id
                             },
-                            success: function (result) {
-
-                                if (!result.Success) {
+                            success: function (res) {
+                                console.log(res);
+                                if (!res.Success) {
+                                    alert_danger(res.Message);
                                     return;
                                 }
+                                _self.BindRoleList();
+                                alert_success(res.Message);
+                                return;
+                            }
+                        })
 
-                                var rolearray = result.Content;
+                    } else {
 
-                                MyAjax({
-                                    url: "/People/GetUserRoleMebmer",
-                                    type: "POST",
-                                    data: {
-                                        userid: _self.userid
-                                    },
-                                    success: function (res) {
+                        MyAjax({
+                            url: "/People/DeleteUserRoleMebmer",
+                            type: "POST",
+                            data: {
+                                id: item.URID
+                            },
+                            success: function (res) {
 
-                                        if (!res.Success) {
-                                            return;
-                                        }
+                                if (!res.Success) {
+                                    alert_danger(res.Message);
+                                    return;
+                                }
+                                _self.BindRoleList();
+                                alert_success(res.Message);
+                                return;
+                            }
+                        })
 
-                                        _self.userrolelist = res.Content;
+                    }
+                },
+
+                //
+                Role(item) {
+
+                    var _self = this;
+                    _self.userid = item.Id;
+
+                    _self.BindRoleList();
+
+                    $('#modal-default').modal('show');
+
+                },
+
+                BindRoleList() {
+                    var _self = this;
+
+                    MyAjax({
+                        url: "/People/GetAllRole",
+                        type: "POST",
+                        data: {
+
+                        },
+                        success: function (result) {
+
+                            if (!result.Success) {
+                                return;
+                            }
+
+                            var rolearray = result.Content;
+
+                            MyAjax({
+                                url: "/People/GetUserRoleMebmer",
+                                type: "POST",
+                                data: {
+                                    userid: _self.userid
+                                },
+                                success: function (res) {
+
+                                    if (!res.Success) {
+                                        return;
+                                    }
+
+                                    _self.userrolelist = res.Content;
 
 
-                                        console.log(JSON.stringify(_self.userrolelist) + "用户与角色关联");
+                                    console.log(JSON.stringify(_self.userrolelist) + "用户与角色关联");
 
 
 
-                                        //第一层循环，系统有多少角色
-                                        for (var i = 0; i < rolearray.length; i++) {
+                                    //第一层循环，系统有多少角色
+                                    for (var i = 0; i < rolearray.length; i++) {
 
-                                            //第二层循环，用户与角色关联表， 查询出用户
-                                            for (var j = 0; j < _self.userrolelist.length; j++) {
+                                        //第二层循环，用户与角色关联表， 查询出用户
+                                        for (var j = 0; j < _self.userrolelist.length; j++) {
 
-                                                if (rolearray[i].Id == _self.userrolelist[j].Roleid) {
+                                            if (rolearray[i].Id == _self.userrolelist[j].Roleid) {
 
-                                                    rolearray[i].checked = true;
-                                                    rolearray[i].URID = _self.userrolelist[j].Id;
+                                                rolearray[i].checked = true;
+                                                rolearray[i].URID = _self.userrolelist[j].Id;
 
-                                                    console.log(rolearray[j].Id + "======" + rolearray[j].checked);
-                                                }
-
+                                                console.log(rolearray[j].Id + "======" + rolearray[j].checked);
                                             }
 
                                         }
 
-                                        _self.rolelist = rolearray;
-
-                                        console.log(JSON.stringify(_self.rolelist) + "角色查看");
-
-
                                     }
-                                })
 
+                                    _self.rolelist = rolearray;
 
+                                    console.log(JSON.stringify(_self.rolelist) + "角色查看");
+                                }
+                            })
+                        }
+                    })
 
-                            }
-                        })
+                },
 
-                    },
-                    DownTemp() {
+                DownTemp() {
 
-                    },
-                    Import() {
+                },
+                Import() {
 
-                    },
-                    Export() {
+                },
+                Export() {
 
+                },
 
-                    }
+                //回车事件
+                EnterKeyup() {
+                    var _self = this;
+                    document.onkeypress = function (e) {
+                        var keycode = document.all ? event.keyCode : e.which;
+
+                        if (keycode == 13) {
+                            self.Init(1);
+                            return false;
+                        }
+                    };
                 }
-            });
-      
-
-
-
-
+            }
+        });
     </script>
-
-
-
 }

@@ -39,7 +39,7 @@ namespace Victory.Template.Entity
 
             if (dbmodel.IsEncrypt)
             {
-                connString= Victory.Core.Encrypt.Aes.AesDecrypt(connString, Core.Helpers.MachineHelper.GetCpuId());
+                connString= Victory.Core.Encrypt.Aes.DecryptString(connString, Core.Helpers.MachineHelper.GetCpuId());
             }
 
             return connString;
