@@ -42,6 +42,8 @@ namespace Victory.Template.WebApp.Controllers
 
             Tright_Menu_Da da = new Tright_Menu_Da();
             da.Insert(model);
+
+
             return SuccessMessage("添加成功！");
 
         }

@@ -51,6 +51,24 @@ namespace Victory.Template.DataAccess.CodeGenerator
             return this.Select.WithSql(sql, new { userid = userid }).OrderBy(s => s.Sortid).ToList();
         }
 
+
+
+        public List<Tright_Operation> ListOperationByRoleId(int roleid)
+        {
+
+            return this.Orm.Select<Tright_Role_Power, Tright_Role_Power, Tright_Power, Tright_Power_Opeartion, Tright_Operation>()
+                  .LeftJoin((tr, trp, tp, tpo, to) => trp.Role_Id == tr.Id)
+                  .LeftJoin((tr, trp, tp, tpo, to) => tp.Id == trp.Power_Id)
+                  .LeftJoin((tr, trp, tp, tpo, to) => tpo.Power_Id == tp.Id)
+                  .LeftJoin((tr, trp, tp, tpo, to) => to.Id == tpo.Operation_Id)
+                  .Where((tr, trp, tp, tpo, to) => tr.Id == roleid)
+                  .ToList<Tright_Operation>()
+                  .AsSelect()
+                  .ToTreeList();
+
+        }
+
+
     }
 }
 

@@ -52,7 +52,7 @@ namespace Victory.Template.DataAccess.CodeGenerator
     LEFT JOIN Tright_Power tp ON tp.Id=trp.Power_Id
     LEFT JOIN Tright_Power_Menu tpm ON tpm.Power_Id=tp.Id
     LEFT JOIN Tright_Menu tm ON tm.Id=tpm.Menu_Id
-    WHERE  tp.id='1' AND tm.Status=0  and  vur.userid=@userid 
+    WHERE   tm.Status=0  and  vur.userid=@userid 
    
 ";
             return this.Select.WithSql(sql,new { userid= userid }).OrderBy(s=>s.Sortid).ToTreeList();

@@ -18,7 +18,7 @@ function cliLogin() {
 	var txtUser = $.trim($("#username").val());
 	var txtPwd = $("#password").val();
 	
-	if ($.trim(txtUser) == "") {
+	if ($.trim(txtUser) === "") {
 	
 		Tip('请输入你的手机号');
 		$("#txtUser").focus();
@@ -32,7 +32,7 @@ function cliLogin() {
 		return;
 		}
 	
-	if ($.trim(txtPwd) == "") {
+	if ($.trim(txtPwd) === "") {
 		Tip('请输入密码！');
 		$("#Userpwd").focus();
 		return;

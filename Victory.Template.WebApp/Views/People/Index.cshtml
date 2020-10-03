@@ -584,7 +584,7 @@
                             data: {
                                 userid: _self.userid,
                                 roleid: item.Id
-                            },
+                            }, showloading: false,
                             success: function (res) {
                                 console.log(res);
                                 if (!res.Success) {
@@ -604,7 +604,7 @@
                             type: "POST",
                             data: {
                                 id: item.URID
-                            },
+                            }, showloading: false,
                             success: function (res) {
 
                                 if (!res.Success) {
@@ -640,7 +640,7 @@
                         type: "POST",
                         data: {
 
-                        },
+                        }, showloading: false,
                         success: function (result) {
 
                             if (!result.Success) {
@@ -655,6 +655,8 @@
                                 data: {
                                     userid: _self.userid
                                 },
+                                showloading: false,
+
                                 success: function (res) {
 
                                     if (!res.Success) {
@@ -664,7 +666,7 @@
                                     _self.userrolelist = res.Content;
 
 
-                                    console.log(JSON.stringify(_self.userrolelist) + "用户与角色关联");
+                                    console.log(_self.userrolelist , "用户与角色关联");
 
 
 
@@ -674,7 +676,7 @@
                                         //第二层循环，用户与角色关联表， 查询出用户
                                         for (var j = 0; j < _self.userrolelist.length; j++) {
 
-                                            if (rolearray[i].Id == _self.userrolelist[j].Roleid) {
+                                            if (rolearray[i].Id == _self.userrolelist[j].Role_Id) {
 
                                                 rolearray[i].checked = true;
                                                 rolearray[i].URID = _self.userrolelist[j].Id;
